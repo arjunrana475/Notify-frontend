@@ -13,6 +13,7 @@ export default function Pinned() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    document.title = "Pinned Notes | Notify";
     const fetchData = async () => {
       try {
         setLoading(true);

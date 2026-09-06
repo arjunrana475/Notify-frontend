@@ -7,6 +7,7 @@ export default function EmptyState({
   subtitle = "Get started by creating your first note or trying a different filter.",
   actionText = "Create Note",
   actionLink = "/createNote",
+  onAction,
 }) {
   return (
     <div
@@ -68,12 +69,22 @@ export default function EmptyState({
         {subtitle}
       </p>
 
-      {actionText && actionLink && (
+      {actionText && onAction ? (
+        <button
+          type="button"
+          onClick={onAction}
+          className="btn-brand-primary"
+          style={{ cursor: "pointer" }}
+        >
+          <Plus size={17} />
+          <span>{actionText}</span>
+        </button>
+      ) : actionText && actionLink ? (
         <Link to={actionLink} className="btn-brand-primary">
           <Plus size={17} />
           <span>{actionText}</span>
         </Link>
-      )}
+      ) : null}
     </div>
   );
 }

@@ -4,7 +4,7 @@ import API from "../services/api.js";
 import Navigation from "../components/Navbar";
 import Swal from "sweetalert2";
 import Loader from "../components/Loader";
-import { category, getCategoryMeta } from "../constants/category.js";
+import { useCategory } from "../context/CategoryContext";
 import {
   FileEdit,
   Pin,
@@ -17,12 +17,14 @@ import {
   X,
   ArrowLeft,
   Check,
+  Plus,
 } from "lucide-react";
 import "../styles/CreateNote.css";
 
 export default function EditNote() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { categories, getMeta, openCreateModal } = useCategory();
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [activeTab, setActiveTab] = useState("edit");
@@ -42,6 +44,7 @@ export default function EditNote() {
         setLoading(true);
         const response = await API.get(`/api/notes/${id}`);
         const n = response.data;
+        document.title = n.title ? `Edit: ${n.title} | Notify` : "Edit Note | Notify";
         setTitle(n.title || "");
         setContent(n.content || "");
         setSelectedCategory(n.category || "DSA");
@@ -235,8 +238,8 @@ export default function EditNote() {
                   Category
                 </label>
                 <div className="category-picker-grid">
-                  {category.map((cat) => {
-                    const meta = getCategoryMeta(cat);
+                  {categories.map((cat) => {
+                    const meta = getMeta(cat);
                     const isSelected = selectedCategory === cat;
                     return (
                       <button
@@ -250,6 +253,22 @@ export default function EditNote() {
                       </button>
                     );
                   })}
+                  <button
+                    type="button"
+                    className="category-pick-btn"
+                    style={{
+                      borderStyle: "dashed",
+                      borderColor: "var(--primary-light)",
+                      color: "var(--primary-light)",
+                      background: "var(--primary-subtle)",
+                      fontWeight: 700,
+                    }}
+                    onClick={() => openCreateModal((newCatName) => setSelectedCategory(newCatName))}
+                    title="Create custom category"
+                  >
+                    <Plus size={15} />
+                    <span>+ New Category</span>
+                  </button>
                 </div>
               </div>
 

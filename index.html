@@ -3,9 +3,38 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Notify — Modern, smart knowledge workspace and notes organizer." />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    
+    <!-- Primary Meta Tags -->
     <title>Notify — Smart Notes & Knowledge Hub</title>
+    <meta name="title" content="Notify — Smart Notes & Knowledge Hub" />
+    <meta
+      name="description"
+      content="Notify is a modern, fast, and intuitive notes workspace. Capture thoughts, categorize knowledge, pin important tasks, and organize code snippets effortlessly."
+    />
+    <meta name="keywords" content="notes app, mern notes, knowledge hub, task manager, developer notes, notify" />
+    <meta name="author" content="Notify" />
+    <meta name="theme-color" content="#090d16" />
+
+    <!-- Open Graph / Facebook / LinkedIn -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://notify.app" />
+    <meta property="og:title" content="Notify — Smart Notes & Knowledge Hub" />
+    <meta
+      property="og:description"
+      content="A modern, lightning-fast knowledge workspace for organizing notes, code snippets, and ideas."
+    />
+    <meta property="og:image" content="/favicon.svg" />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Notify — Smart Notes & Knowledge Hub" />
+    <meta
+      name="twitter:description"
+      content="A modern, lightning-fast knowledge workspace for organizing notes, code snippets, and ideas."
+    />
+    <meta name="twitter:image" content="/favicon.svg" />
     
     <!-- Google Fonts Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -18,8 +47,10 @@
     <!-- Inline theme script to prevent flash of wrong theme -->
     <script>
       (function() {
-        const savedTheme = localStorage.getItem('notify_theme') || 'dark';
-        document.documentElement.setAttribute('data-theme', savedTheme);
+        try {
+          const savedTheme = localStorage.getItem('notify_theme') || 'dark';
+          document.documentElement.setAttribute('data-theme', savedTheme);
+        } catch (e) {}
       })();
     </script>
   </head>

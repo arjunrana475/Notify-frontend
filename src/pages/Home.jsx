@@ -1,66 +1,72 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import API from "../services/api.js";
 import Navigation from "../components/Navbar";
 import NoteCard from "../components/NoteCard";
 import EmptyState from "../components/EmptyState";
 import Loader from "../components/Loader";
 import StaticsCard from "../components/StaticsCard.jsx";
-import { category, getCategoryMeta } from "../constants/category.js";
-import { Plus, Sparkles, SlidersHorizontal, LayoutGrid, List } from "lucide-react";
-import { Link } from "react-router-dom";
+import BrowseTopicsModal from "../components/BrowseTopicsModal.jsx";
+import { Plus, Sparkles, SlidersHorizontal, LayoutGrid, List, Search, X, Tag } from "lucide-react";
+import { Link, useSearchParams } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { useCategory } from "../context/CategoryContext";
 
 const Home = () => {
+  const { user: currentUser, isLoggedIn } = useAuth();
+  const { categories, getMeta, openCreateModal } = useCategory();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [allNotes, setAllNotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("All");
+  const [activeTopic, setActiveTopic] = useState(() => searchParams.get("topic") || "");
+  const [isTopicModalOpen, setIsTopicModalOpen] = useState(false);
   const [sortBy, setSortBy] = useState("newest"); // newest | oldest | title
   const [viewMode, setViewMode] = useState("grid"); // grid | list
-  const [isUnauthenticated, setIsUnauthenticated] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [currentUser, setCurrentUser] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem("user") || "null");
-    } catch {
-      return null;
-    }
-  });
+  const [searchQuery, setSearchQuery] = useState(() => searchParams.get("search") || "");
 
   const totalNotes = allNotes.length;
   const pinnedNotes = allNotes.filter((note) => note.isPinned).length;
   const archivedNotes = allNotes.filter((note) => note.isArchived).length;
-  const totalTopics = new Set(allNotes.flatMap((note) => note.topics || [])).size;
+  const totalTopics = new Set(
+    allNotes
+      .flatMap((note) => note.topics || [])
+      .map((t) => (typeof t === "string" ? t.trim().replace(/^#/, "").toLowerCase() : ""))
+      .filter(Boolean)
+  ).size;
 
-  const fetchNotes = async () => {
+  const fetchNotes = useCallback(async () => {
+    if (!isLoggedIn) {
+      setAllNotes([]);
+      setLoading(false);
+      return;
+    }
     try {
       setLoading(true);
       const response = await API.get("/api/notes");
       setAllNotes(response.data || []);
-      setIsUnauthenticated(false);
-      try {
-        const stored = JSON.parse(localStorage.getItem("user") || "null");
-        setCurrentUser(stored);
-      } catch {
-        setCurrentUser(null);
-      }
     } catch (error) {
-      if (error.response?.status === 401) {
-        setIsUnauthenticated(true);
-        localStorage.removeItem("user");
-        setCurrentUser(null);
-      }
+      console.error("Error fetching notes:", error);
       setAllNotes([]);
     } finally {
       setLoading(false);
     }
-  };
+  }, [isLoggedIn]);
 
-  useEffect(() => {
-    fetchNotes();
-  }, []);
+  const handleSearch = useCallback(async (search) => {
+    const trimmed = search || "";
+    setSearchQuery(trimmed);
 
-  const handleSearch = async (search) => {
-    setSearchQuery(search);
-    if (!search || search.trim() === "") {
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+      if (trimmed) {
+        newParams.set("search", trimmed);
+      } else {
+        newParams.delete("search");
+      }
+      return newParams;
+    });
+
+    if (!trimmed.trim()) {
       fetchNotes();
       return;
     }
@@ -68,7 +74,7 @@ const Home = () => {
     try {
       setLoading(true);
       const response = await API.get(
-        `/api/notes/search?search=${encodeURIComponent(search)}`
+        `/api/notes/search?search=${encodeURIComponent(trimmed)}`
       );
       setAllNotes(response.data || []);
     } catch (error) {
@@ -76,7 +82,40 @@ const Home = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [fetchNotes, setSearchParams]);
+
+  const handleTopicSelect = useCallback(
+    (topic) => {
+      const clean = topic ? topic.trim().replace(/^#/, "") : "";
+      setActiveTopic(clean);
+      setSearchParams((prev) => {
+        const newParams = new URLSearchParams(prev);
+        if (clean) {
+          newParams.set("topic", clean);
+        } else {
+          newParams.delete("topic");
+        }
+        return newParams;
+      });
+    },
+    [setSearchParams]
+  );
+
+  useEffect(() => {
+    document.title = "Notify — Smart Notes & Knowledge Hub";
+    const query = searchParams.get("search");
+    const topicParam = searchParams.get("topic");
+
+    if (topicParam !== null) {
+      setActiveTopic(topicParam ? topicParam.trim().replace(/^#/, "") : "");
+    }
+
+    if (query) {
+      handleSearch(query);
+    } else {
+      fetchNotes();
+    }
+  }, [fetchNotes, handleSearch, searchParams]);
 
   // Memoized filter and sort
   const displayedNotes = useMemo(() => {
@@ -85,6 +124,19 @@ const Home = () => {
     // Category filter
     if (activeCategory !== "All") {
       result = result.filter((n) => n.category === activeCategory);
+    }
+
+    // Topic filter
+    if (activeTopic) {
+      const targetTopic = activeTopic.toLowerCase();
+      result = result.filter((n) =>
+        Array.isArray(n.topics) &&
+        n.topics.some(
+          (t) =>
+            typeof t === "string" &&
+            t.trim().replace(/^#/, "").toLowerCase() === targetTopic
+        )
+      );
     }
 
     // Sorting
@@ -100,7 +152,7 @@ const Home = () => {
     result.sort((a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0));
 
     return result;
-  }, [activeCategory, sortBy, allNotes]);
+  }, [activeCategory, activeTopic, sortBy, allNotes]);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -112,7 +164,7 @@ const Home = () => {
   if (loading && allNotes.length === 0) {
     return (
       <>
-        <Navigation onSearch={handleSearch} />
+        <Navigation onSearch={handleSearch} initialSearch={searchQuery} />
         <Loader message="Loading your notes workspace..." />
       </>
     );
@@ -120,7 +172,7 @@ const Home = () => {
 
   return (
     <>
-      <Navigation onSearch={handleSearch} />
+      <Navigation onSearch={handleSearch} initialSearch={searchQuery} />
 
       <main className="container-fluid" style={{ maxWidth: "1280px", padding: "1.5rem 1.25rem 4rem" }}>
         {/* Welcome Hero Banner */}
@@ -253,7 +305,7 @@ const Home = () => {
                 value={totalTopics}
                 accentColor="#10b981"
                 buttonText="Browse Notes"
-                buttonLink="/"
+                onClick={() => setIsTopicModalOpen(true)}
               />
             </div>
           </div>
@@ -317,8 +369,8 @@ const Home = () => {
                 </span>
               </button>
 
-              {category.map((catName) => {
-                const meta = getCategoryMeta(catName);
+              {categories.map((catName) => {
+                const meta = getMeta(catName);
                 const count = allNotes.filter((n) => n.category === catName).length;
                 const isSelected = activeCategory === catName;
                 return (
@@ -355,6 +407,66 @@ const Home = () => {
                   </button>
                 );
               })}
+
+              {/* Browse Topics Quick Pill */}
+              <button
+                type="button"
+                onClick={() => setIsTopicModalOpen(true)}
+                className="badge-pill"
+                style={{
+                  background: activeTopic ? "var(--accent-emerald, #10b981)" : "var(--surface)",
+                  color: activeTopic ? "#ffffff" : "var(--text-main)",
+                  border: `1px solid ${activeTopic ? "var(--accent-emerald, #10b981)" : "var(--surface-border)"}`,
+                  cursor: "pointer",
+                  padding: "0.45rem 0.95rem",
+                  fontSize: "0.85rem",
+                  whiteSpace: "nowrap",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.35rem",
+                  boxShadow: activeTopic ? "0 4px 12px rgba(16, 185, 129, 0.3)" : "none",
+                }}
+                title="Browse by Topics & Tags"
+              >
+                <span>🏷️</span>
+                <span>{activeTopic ? `#${activeTopic}` : "Topics"}</span>
+                {totalTopics > 0 && (
+                  <span
+                    style={{
+                      background: activeTopic ? "rgba(255,255,255,0.25)" : "rgba(0,0,0,0.08)",
+                      padding: "1px 6px",
+                      borderRadius: "8px",
+                      fontSize: "0.72rem",
+                    }}
+                  >
+                    {totalTopics}
+                  </span>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => openCreateModal((newCatName) => setActiveCategory(newCatName))}
+                className="badge-pill"
+                style={{
+                  borderStyle: "dashed",
+                  borderColor: "var(--primary-light)",
+                  color: "var(--primary-light)",
+                  background: "var(--primary-subtle)",
+                  cursor: "pointer",
+                  padding: "0.45rem 0.85rem",
+                  fontSize: "0.85rem",
+                  whiteSpace: "nowrap",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.3rem",
+                  fontWeight: 700,
+                }}
+                title="Create custom category"
+              >
+                <Plus size={14} />
+                <span>+ New Category</span>
+              </button>
             </div>
 
             {/* Sort & View Controls */}
@@ -431,9 +543,135 @@ const Home = () => {
           </div>
         </section>
 
+        {/* Active Search Result Banner */}
+        {searchQuery && (
+          <div
+            className="glass-panel animate-fade-in"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "0.85rem 1.3rem",
+              marginBottom: "1.4rem",
+              background: "var(--primary-subtle)",
+              borderColor: "var(--primary-border)",
+              gap: "1rem",
+              flexWrap: "wrap",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+              <Search size={17} color="var(--primary-light)" />
+              <span style={{ fontSize: "0.92rem", color: "var(--text-main)", fontWeight: 600 }}>
+                Found <strong style={{ color: "var(--primary-light)" }}>{displayedNotes.length}</strong>{" "}
+                {displayedNotes.length === 1 ? "note" : "notes"} matching{" "}
+                <span
+                  style={{
+                    background: "rgba(99, 102, 241, 0.2)",
+                    padding: "2px 8px",
+                    borderRadius: "6px",
+                    color: "var(--primary-light)",
+                    fontWeight: 700,
+                  }}
+                >
+                  "{searchQuery}"
+                </span>
+              </span>
+            </div>
+
+            <button
+              type="button"
+              className="btn-brand-secondary"
+              onClick={() => handleSearch("")}
+              style={{
+                fontSize: "0.82rem",
+                padding: "0.35rem 0.85rem",
+                background: "var(--surface)",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.35rem",
+              }}
+            >
+              <X size={14} />
+              <span>Clear Search</span>
+            </button>
+          </div>
+        )}
+
+        {/* Active Topic Filter Banner */}
+        {activeTopic && (
+          <div
+            className="glass-panel animate-fade-in"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "0.85rem 1.3rem",
+              marginBottom: "1.6rem",
+              background: "rgba(16, 185, 129, 0.12)",
+              borderColor: "rgba(16, 185, 129, 0.3)",
+              gap: "1rem",
+              flexWrap: "wrap",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+              <Tag size={17} color="#10b981" />
+              <span style={{ fontSize: "0.92rem", color: "var(--text-main)", fontWeight: 600 }}>
+                Filtering by Topic:{" "}
+                <span
+                  style={{
+                    background: "rgba(16, 185, 129, 0.22)",
+                    padding: "2px 9px",
+                    borderRadius: "6px",
+                    color: "#10b981",
+                    fontWeight: 700,
+                  }}
+                >
+                  #{activeTopic}
+                </span>
+                {" — "}
+                <strong style={{ color: "#10b981" }}>{displayedNotes.length}</strong>{" "}
+                {displayedNotes.length === 1 ? "note" : "notes"} found
+              </span>
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <button
+                type="button"
+                className="btn-brand-ghost"
+                onClick={() => setIsTopicModalOpen(true)}
+                style={{
+                  fontSize: "0.82rem",
+                  padding: "0.35rem 0.8rem",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.3rem",
+                }}
+              >
+                <span>Change Topic</span>
+              </button>
+              <button
+                type="button"
+                className="btn-brand-secondary"
+                onClick={() => handleTopicSelect("")}
+                style={{
+                  fontSize: "0.82rem",
+                  padding: "0.35rem 0.85rem",
+                  background: "var(--surface)",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.35rem",
+                }}
+              >
+                <X size={14} />
+                <span>Clear Filter</span>
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Notes Display */}
         {displayedNotes.length === 0 ? (
-          isUnauthenticated ? (
+          !isLoggedIn ? (
             <EmptyState
               emoji="🔐"
               title="Sign in to access your workspace"
@@ -448,6 +686,16 @@ const Home = () => {
               subtitle={`No notes matched your search "${searchQuery}". Try a different keyword.`}
               actionText="Clear Search"
               actionLink="#"
+              onAction={() => handleSearch("")}
+            />
+          ) : activeTopic ? (
+            <EmptyState
+              emoji="🏷️"
+              title={`No notes tagged #${activeTopic}`}
+              subtitle={`You don't have any notes matching #${activeTopic}. Try selecting another topic or clear the filter.`}
+              actionText="Clear Topic Filter"
+              actionLink="#"
+              onAction={() => handleTopicSelect("")}
             />
           ) : (
             <EmptyState
@@ -471,6 +719,14 @@ const Home = () => {
             ))}
           </div>
         )}
+
+        {/* Browse Topics & Tags Explorer Modal */}
+        <BrowseTopicsModal
+          isOpen={isTopicModalOpen}
+          onClose={() => setIsTopicModalOpen(false)}
+          notes={allNotes}
+          onSelectTopic={handleTopicSelect}
+        />
       </main>
     </>
   );

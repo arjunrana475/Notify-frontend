@@ -4,7 +4,7 @@ import API from "../services/api.js";
 import Navigation from "../components/Navbar";
 import Swal from "sweetalert2";
 import Loader from "../components/Loader";
-import { getCategoryMeta } from "../constants/category.js";
+import { useCategory } from "../context/CategoryContext.jsx";
 import {
   ArrowLeft,
   Calendar,
@@ -23,6 +23,7 @@ import "../styles/NoteDetails.css";
 export default function NoteDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { getMeta } = useCategory();
   const [note, setNote] = useState(null);
   const [loading, setLoading] = useState(true);
   const [categoryCount, setCategoryCount] = useState(0);
@@ -34,6 +35,11 @@ export default function NoteDetails() {
         setLoading(true);
         const response = await API.get(`/api/notes/${id}`);
         setNote(response.data);
+        if (response.data?.title) {
+          document.title = `${response.data.title} | Notify`;
+        } else {
+          document.title = "Note Details | Notify";
+        }
 
         // Fetch category count
         if (response.data?.category) {
@@ -157,7 +163,7 @@ export default function NoteDetails() {
 
   if (!note) return null;
 
-  const catMeta = getCategoryMeta(note.category);
+  const catMeta = getMeta(note.category);
   const authorName = note.user?.name || "Anonymous";
   const authorInitials = authorName
     .split(" ")
@@ -251,8 +257,14 @@ export default function NoteDetails() {
             <div style={{ marginBottom: "1rem" }}>
               <Link
                 to={`/category/${encodeURIComponent(note.category)}`}
-                className={`badge-pill ${catMeta.colorClass}`}
-                style={{ fontSize: "0.85rem", padding: "0.4rem 0.9rem" }}
+                className={`badge-pill ${catMeta.isCustom ? "" : catMeta.colorClass}`}
+                style={{
+                  fontSize: "0.85rem",
+                  padding: "0.4rem 0.9rem",
+                  background: catMeta.isCustom ? catMeta.bg : undefined,
+                  color: catMeta.isCustom ? catMeta.color : undefined,
+                  borderColor: catMeta.isCustom ? catMeta.border : undefined,
+                }}
               >
                 <span>{catMeta.icon}</span>
                 <span>{note.category}</span>
@@ -311,11 +323,21 @@ export default function NoteDetails() {
           {/* Topics Chips */}
           {note.topics && note.topics.length > 0 && (
             <div className="details-topics-row">
-              {note.topics.map((t, i) => (
-                <span key={i} className="topic-chip" style={{ fontSize: "0.82rem", padding: "0.3rem 0.75rem" }}>
-                  #{t}
-                </span>
-              ))}
+              {note.topics.map((t, i) => {
+                const cleanTag = (t || "").trim().replace(/^#/, "");
+                if (!cleanTag) return null;
+                return (
+                  <span
+                    key={i}
+                    className="topic-chip"
+                    style={{ fontSize: "0.82rem", padding: "0.3rem 0.75rem", cursor: "pointer" }}
+                    onClick={() => navigate(`/?topic=${encodeURIComponent(cleanTag)}`)}
+                    title={`Browse notes tagged with #${cleanTag}`}
+                  >
+                    #{cleanTag}
+                  </span>
+                );
+              })}
             </div>
           )}
 

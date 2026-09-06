@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api.js";
 import { toast } from "react-toastify";
 import Navigation from "../components/Navbar";
-import { category, getCategoryMeta } from "../constants/category.js";
+import { useCategory } from "../context/CategoryContext";
 import {
   FilePlus,
   Pin,
@@ -16,13 +16,19 @@ import {
   X,
   ArrowLeft,
   Check,
+  Plus,
 } from "lucide-react";
 import "../styles/CreateNote.css";
 
 export default function CreateNote() {
   const navigate = useNavigate();
+  const { categories, getMeta, openCreateModal } = useCategory();
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("edit"); // "edit" | "preview"
+
+  useEffect(() => {
+    document.title = "Create New Note | Notify";
+  }, []);
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -193,8 +199,8 @@ export default function CreateNote() {
                   Select Category *
                 </label>
                 <div className="category-picker-grid">
-                  {category.map((cat) => {
-                    const meta = getCategoryMeta(cat);
+                  {categories.map((cat) => {
+                    const meta = getMeta(cat);
                     const isSelected = selectedCategory === cat;
                     return (
                       <button
@@ -208,6 +214,22 @@ export default function CreateNote() {
                       </button>
                     );
                   })}
+                  <button
+                    type="button"
+                    className="category-pick-btn"
+                    style={{
+                      borderStyle: "dashed",
+                      borderColor: "var(--primary-light)",
+                      color: "var(--primary-light)",
+                      background: "var(--primary-subtle)",
+                      fontWeight: 700,
+                    }}
+                    onClick={() => openCreateModal((newCatName) => setSelectedCategory(newCatName))}
+                    title="Create custom category"
+                  >
+                    <Plus size={15} />
+                    <span>+ New Category</span>
+                  </button>
                 </div>
               </div>
 

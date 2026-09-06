@@ -8,8 +8,18 @@ export default function StaticsCard({
   accentColor = "#6366f1",
   buttonText = "View Details",
   buttonLink = "/",
+  onClick,
 }) {
   const navigate = useNavigate();
+
+  const handleClick = (e) => {
+    e.stopPropagation();
+    if (onClick && typeof onClick === "function") {
+      onClick();
+    } else if (buttonLink) {
+      navigate(buttonLink);
+    }
+  };
 
   return (
     <div
@@ -88,7 +98,8 @@ export default function StaticsCard({
 
       {/* Bottom row: Interactive link / button */}
       <button
-        onClick={() => navigate(buttonLink)}
+        type="button"
+        onClick={handleClick}
         style={{
           width: "100%",
           padding: "0.55rem 0.9rem",

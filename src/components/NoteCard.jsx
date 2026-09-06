@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api.js";
 import Swal from "sweetalert2";
-import { getCategoryMeta } from "../constants/category.js";
+import { useCategory } from "../context/CategoryContext";
 import { Pin, Archive, ExternalLink } from "lucide-react";
 import "../styles/NoteCard.css";
 
 const NoteCard = ({ note }) => {
   const navigate = useNavigate();
+  const { getMeta } = useCategory();
   const [currentNote, setCurrentNote] = useState(note);
   const [categoryCount, setCategoryCount] = useState(0);
 
@@ -108,7 +109,7 @@ const NoteCard = ({ note }) => {
     fetchCategoryCount();
   }, [currentNote.category]);
 
-  const catMeta = getCategoryMeta(currentNote.category);
+  const catMeta = getMeta(currentNote.category);
   const authorName = currentNote.user?.name || "Author";
   const authorInitials = authorName
     .split(" ")
@@ -134,7 +135,12 @@ const NoteCard = ({ note }) => {
       <div className="note-header-row">
         {currentNote.category ? (
           <div
-            className={`note-category-tag ${catMeta.colorClass}`}
+            className={`note-category-tag ${catMeta.isCustom ? "" : catMeta.colorClass}`}
+            style={{
+              background: catMeta.isCustom ? catMeta.bg : undefined,
+              color: catMeta.isCustom ? catMeta.color : undefined,
+              borderColor: catMeta.isCustom ? catMeta.border : undefined,
+            }}
             onClick={(e) => {
               e.stopPropagation();
               navigate(`/category/${encodeURIComponent(currentNote.category)}`);
@@ -182,11 +188,24 @@ const NoteCard = ({ note }) => {
       {/* Topics Badges */}
       {currentNote.topics && currentNote.topics.length > 0 && (
         <div className="note-topics-wrap">
-          {currentNote.topics.map((topic, i) => (
-            <span key={i} className="topic-chip">
-              #{topic}
-            </span>
-          ))}
+          {currentNote.topics.map((topic, i) => {
+            const cleanTopic = (topic || "").trim().replace(/^#/, "");
+            if (!cleanTopic) return null;
+            return (
+              <span
+                key={i}
+                className="topic-chip"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`/?topic=${encodeURIComponent(cleanTopic)}`);
+                }}
+                title={`Filter workspace by #${cleanTopic}`}
+                style={{ cursor: "pointer" }}
+              >
+                #{cleanTopic}
+              </span>
+            );
+          })}
         </div>
       )}
 

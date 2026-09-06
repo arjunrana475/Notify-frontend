@@ -5,18 +5,20 @@ import Loader from "../components/Loader";
 import NoteCard from "../components/NoteCard";
 import EmptyState from "../components/EmptyState";
 import Navigation from "../components/Navbar";
-import { getCategoryMeta } from "../constants/category.js";
+import { useCategory } from "../context/CategoryContext";
 import { ArrowLeft, Plus } from "lucide-react";
 import "../styles/Category.css";
 
 export default function Category() {
   const { category: catParam } = useParams();
+  const { getMeta } = useCategory();
   const navigate = useNavigate();
 
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    document.title = catParam ? `${catParam} Notes | Notify` : "Category Notes | Notify";
     const fetchCategoryNotes = async () => {
       try {
         setLoading(true);
@@ -34,7 +36,7 @@ export default function Category() {
     fetchCategoryNotes();
   }, [catParam]);
 
-  const meta = getCategoryMeta(catParam);
+  const meta = getMeta(catParam);
 
   if (loading) {
     return (

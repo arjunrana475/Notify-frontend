@@ -1,11 +1,11 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { category, getCategoryMeta } from "../constants/category.js";
 import { useEffect, useRef, useState } from "react";
-import API from "../services/api.js";
 import "../styles/navbar.css";
 import Swal from "sweetalert2";
 import SearchBar from "./SearchBar";
 import { useTheme } from "../context/ThemeContext";
+import { useAuth } from "../context/AuthContext";
+import { useCategory } from "../context/CategoryContext";
 import {
   Sparkles,
   Pin,
@@ -21,14 +21,14 @@ import {
   Moon,
 } from "lucide-react";
 
-const Navigation = ({ onSearch }) => {
-  const user = JSON.parse(localStorage.getItem("user") || "null");
+const Navigation = ({ onSearch, initialSearch = "" }) => {
+  const { user, isLoggedIn, logout } = useAuth();
+  const { categories, getMeta, openCreateModal } = useCategory();
   const navigate = useNavigate();
   const location = useLocation();
   const { toggleTheme, isDark } = useTheme();
 
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [categoryOpen, setCategoryOpen] = useState(false);
 
@@ -60,10 +60,7 @@ const Navigation = ({ onSearch }) => {
     if (!result.isConfirmed) return;
 
     try {
-      await API.post("/api/auth/logout");
-
-      setIsLoggedIn(false);
-      localStorage.removeItem("user");
+      await logout();
 
       await Swal.fire({
         icon: "success",
@@ -82,22 +79,6 @@ const Navigation = ({ onSearch }) => {
       });
     }
   };
-
-  useEffect(() => {
-    const checkLogin = async () => {
-      try {
-        const res = await API.get("/api/auth/verify");
-        setIsLoggedIn(true);
-        if (res.data?.user) {
-          localStorage.setItem("user", JSON.stringify(res.data.user));
-        }
-      } catch {
-        setIsLoggedIn(false);
-        localStorage.removeItem("user");
-      }
-    };
-    checkLogin();
-  }, []);
 
   // Close menus on outside click
   useEffect(() => {
@@ -131,7 +112,7 @@ const Navigation = ({ onSearch }) => {
 
         {/* Global Search Bar Center */}
         <div className="nb-search-center">
-          <SearchBar onSearch={onSearch} />
+          <SearchBar onSearch={onSearch} initialValue={initialSearch} />
         </div>
 
         {/* Desktop Nav Items */}
@@ -157,8 +138,8 @@ const Navigation = ({ onSearch }) => {
 
             {categoryOpen && (
               <div className="nb-cat-menu-card">
-                {category.map((catName) => {
-                  const meta = getCategoryMeta(catName);
+                {categories.map((catName) => {
+                  const meta = getMeta(catName);
                   return (
                     <Link
                       key={catName}
@@ -173,6 +154,32 @@ const Navigation = ({ onSearch }) => {
                     </Link>
                   );
                 })}
+
+                <button
+                  type="button"
+                  className="nb-cat-menu-item"
+                  style={{
+                    color: "var(--primary-light)",
+                    fontWeight: 700,
+                    borderTop: "1px solid var(--surface-border)",
+                    marginTop: "0.25rem",
+                    paddingTop: "0.6rem",
+                    background: "none",
+                    border: "none",
+                    width: "100%",
+                    cursor: "pointer",
+                    textAlign: "left",
+                  }}
+                  onClick={() => {
+                    setCategoryOpen(false);
+                    openCreateModal();
+                  }}
+                >
+                  <div className="nb-cat-item-left">
+                    <Plus size={15} color="var(--primary-light)" />
+                    <span>+ New Category</span>
+                  </div>
+                </button>
               </div>
             )}
           </div>
@@ -296,7 +303,7 @@ const Navigation = ({ onSearch }) => {
       {isOpen && (
         <div className="glass-panel nb-mobile-drawer open">
           <div style={{ marginBottom: "0.75rem" }}>
-            <SearchBar onSearch={onSearch} />
+            <SearchBar onSearch={onSearch} initialValue={initialSearch} />
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
@@ -342,7 +349,7 @@ const Navigation = ({ onSearch }) => {
                 Categories
               </span>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem", marginTop: "0.5rem" }}>
-                {category.map((c) => (
+                {categories.map((c) => (
                   <Link
                     key={c}
                     to={`/category/${encodeURIComponent(c)}`}
@@ -353,6 +360,29 @@ const Navigation = ({ onSearch }) => {
                     {c}
                   </Link>
                 ))}
+                <button
+                  type="button"
+                  className="badge-pill"
+                  style={{
+                    fontSize: "0.8rem",
+                    padding: "0.3rem 0.6rem",
+                    borderStyle: "dashed",
+                    borderColor: "var(--primary-light)",
+                    color: "var(--primary-light)",
+                    background: "var(--primary-subtle)",
+                    cursor: "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.25rem",
+                  }}
+                  onClick={() => {
+                    setIsOpen(false);
+                    openCreateModal();
+                  }}
+                >
+                  <Plus size={13} />
+                  <span>New Category</span>
+                </button>
               </div>
             </div>
 

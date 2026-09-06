@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import API from "../services/api.js";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
@@ -10,6 +10,10 @@ export default function Register() {
   const { isDark, toggleTheme } = useTheme();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    document.title = "Create Account | Notify";
+  }, []);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -54,7 +58,7 @@ export default function Register() {
         navigate("/login");
       }, 750);
     } catch (error) {
-      if (error.response) {
+      if (error.response?.data?.message) {
         toast.error(error.response.data.message);
       } else {
         toast.error("Failed to connect to backend server");

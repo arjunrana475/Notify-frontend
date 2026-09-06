@@ -13,6 +13,7 @@ export default function Archive() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    document.title = "Archived Notes | Notify";
     const fetchData = async () => {
       try {
         setLoading(true);

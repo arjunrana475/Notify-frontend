@@ -1,15 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import API from "../services/api.js";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import { Sparkles, Mail, Lock, Eye, EyeOff, ArrowRight, Sun, Moon } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
   const { isDark, toggleTheme } = useTheme();
+  const { login } = useAuth();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    document.title = "Sign In | Notify";
+  }, []);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -32,20 +38,23 @@ const Login = () => {
     try {
       const { data } = await API.post("/api/auth/login", formData);
 
-      const { success, message } = data;
+      const { success, message, user, token } = data;
       if (success) {
         toast.success(message || "Welcome back!");
-        localStorage.setItem("user", JSON.stringify(data.user));
+        login(user, token);
         setFormData({ email: "", password: "" });
         setTimeout(() => {
           navigate("/");
-        }, 600);
+        }, 400);
       } else {
         toast.error(message || "Invalid credentials");
       }
     } catch (error) {
-      if (error.response) toast.error(error.response.data.message);
-      else toast.error("Failed to connect to backend");
+      if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Failed to connect to backend");
+      }
     } finally {
       setLoading(false);
     }

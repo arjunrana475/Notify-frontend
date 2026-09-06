@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1" />
+      <stop offset="50%" stop-color="#8b5cf6" />
+      <stop offset="100%" stop-color="#d946ef" />
+    </linearGradient>
+    <linearGradient id="sparkleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#f5f3ff" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="16" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background Squircle -->
+  <rect x="32" y="32" width="448" height="448" rx="128" fill="url(#bgGrad)" />
+  
+  <!-- Subtle inner border -->
+  <rect x="36" y="36" width="440" height="440" rx="124" stroke="#ffffff" stroke-opacity="0.25" stroke-width="8" />
+
+  <!-- Star / Sparkles Glyph -->
+  <!-- Main 4-point star -->
+  <path
+    d="M 256 112 C 256 192, 256 192, 336 256 C 256 320, 256 320, 256 400 C 256 320, 256 320, 176 256 C 256 192, 256 192, 256 112 Z"
+    fill="url(#sparkleGrad)"
+    filter="url(#glow)"
+  />
+
+  <!-- Top Right Small Sparkle -->
+  <path
+    d="M 370 120 C 370 145, 370 145, 395 160 C 370 175, 370 175, 370 200 C 370 175, 370 175, 345 160 C 370 145, 370 145, 370 120 Z"
+    fill="#ffffff"
+    opacity="0.9"
+  />
+
+  <!-- Bottom Left Tiny Sparkle -->
+  <circle cx="140" cy="360" r="14" fill="#ffffff" opacity="0.85" />
+</svg>
