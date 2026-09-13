@@ -54,7 +54,7 @@ export default function EditNote() {
         setIsArchived(!!n.isArchived);
       } catch (error) {
         Swal.fire({
-          title: "Error!",
+          title: "Error",
           text: error.response?.data?.message || "Unable to fetch note details",
           icon: "error",
         }).then(() => {
@@ -121,10 +121,10 @@ export default function EditNote() {
       await API.put(`/api/notes/${id}`, payload);
 
       await Swal.fire({
-        title: "Updated Successfully!",
+        title: "Saved",
         text: "Your changes have been saved.",
         icon: "success",
-        timer: 1400,
+        timer: 1200,
         showConfirmButton: false,
       });
 
@@ -140,7 +140,7 @@ export default function EditNote() {
     }
   };
 
-  const catMeta = getCategoryMeta(selectedCategory);
+  const catMeta = getMeta(selectedCategory);
 
   if (loading) {
     return (
@@ -161,11 +161,11 @@ export default function EditNote() {
           <div className="editor-header">
             <div className="editor-header-title">
               <div className="editor-header-icon">
-                <FileEdit size={22} />
+                <FileEdit size={20} />
               </div>
               <div>
-                <h1 style={{ fontSize: "1.45rem", margin: 0, color: "var(--text-main)" }}>Edit Note</h1>
-                <p style={{ fontSize: "0.82rem", color: "var(--text-muted)", margin: 0 }}>
+                <h1 style={{ fontSize: "1.3rem", fontWeight: 700, margin: 0, color: "var(--text-main)" }}>Edit Note</h1>
+                <p style={{ fontSize: "0.8rem", color: "var(--text-muted)", margin: 0 }}>
                   Modify title, content, category, or tags.
                 </p>
               </div>
@@ -175,8 +175,8 @@ export default function EditNote() {
             <div
               style={{
                 display: "flex",
-                background: "var(--surface-hover)",
-                padding: "3px",
+                background: "var(--surface-subtle)",
+                padding: "2px",
                 borderRadius: "var(--radius-md)",
                 border: "1px solid var(--surface-border)",
               }}
@@ -186,14 +186,14 @@ export default function EditNote() {
                 className="btn-brand-ghost"
                 onClick={() => setActiveTab("edit")}
                 style={{
-                  padding: "0.35rem 0.8rem",
-                  fontSize: "0.82rem",
+                  padding: "0.3rem 0.7rem",
+                  fontSize: "0.8rem",
                   background: activeTab === "edit" ? "var(--surface)" : "transparent",
-                  color: activeTab === "edit" ? "var(--primary-light)" : "var(--text-muted)",
+                  color: activeTab === "edit" ? "var(--primary)" : "var(--text-muted)",
                   boxShadow: activeTab === "edit" ? "var(--shadow-xs)" : "none",
                 }}
               >
-                <Edit3 size={14} />
+                <Edit3 size={13} />
                 <span>Edit</span>
               </button>
               <button
@@ -201,14 +201,14 @@ export default function EditNote() {
                 className="btn-brand-ghost"
                 onClick={() => setActiveTab("preview")}
                 style={{
-                  padding: "0.35rem 0.8rem",
-                  fontSize: "0.82rem",
+                  padding: "0.3rem 0.7rem",
+                  fontSize: "0.8rem",
                   background: activeTab === "preview" ? "var(--surface)" : "transparent",
-                  color: activeTab === "preview" ? "var(--primary-light)" : "var(--text-muted)",
+                  color: activeTab === "preview" ? "var(--primary)" : "var(--text-muted)",
                   boxShadow: activeTab === "preview" ? "var(--shadow-xs)" : "none",
                 }}
               >
-                <Eye size={14} />
+                <Eye size={13} />
                 <span>Preview</span>
               </button>
             </div>
@@ -234,7 +234,7 @@ export default function EditNote() {
               {/* Category Picker */}
               <div className="form-group-modern">
                 <label className="form-label-modern">
-                  <Layers size={15} />
+                  <Layers size={14} />
                   Category
                 </label>
                 <div className="category-picker-grid">
@@ -258,16 +258,14 @@ export default function EditNote() {
                     className="category-pick-btn"
                     style={{
                       borderStyle: "dashed",
-                      borderColor: "var(--primary-light)",
-                      color: "var(--primary-light)",
-                      background: "var(--primary-subtle)",
-                      fontWeight: 700,
+                      borderColor: "var(--surface-border-strong)",
+                      color: "var(--text-muted)",
                     }}
                     onClick={() => openCreateModal((newCatName) => setSelectedCategory(newCatName))}
                     title="Create custom category"
                   >
-                    <Plus size={15} />
-                    <span>+ New Category</span>
+                    <Plus size={14} />
+                    <span>New Category</span>
                   </button>
                 </div>
               </div>
@@ -275,7 +273,7 @@ export default function EditNote() {
               {/* Topics / Tag Chips */}
               <div className="form-group-modern">
                 <label className="form-label-modern">
-                  <Tag size={15} />
+                  <Tag size={14} />
                   Topics & Tags
                 </label>
                 <div className="tag-input-container">
@@ -288,7 +286,7 @@ export default function EditNote() {
                         onClick={() => handleRemoveTag(t)}
                         title="Remove tag"
                       >
-                        <X size={12} />
+                        <X size={11} />
                       </button>
                     </span>
                   ))}
@@ -309,7 +307,7 @@ export default function EditNote() {
               {/* Link Input */}
               <div className="form-group-modern">
                 <label className="form-label-modern" htmlFor="link">
-                  <LinkIcon size={15} />
+                  <LinkIcon size={14} />
                   Attached Link
                 </label>
                 <input
@@ -323,12 +321,12 @@ export default function EditNote() {
 
               {/* Content Body */}
               <div className="form-group-modern">
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.4rem" }}>
                   <label className="form-label-modern" htmlFor="content" style={{ margin: 0 }}>
                     Note Content *
                   </label>
-                  <span style={{ fontSize: "0.78rem", color: "var(--text-subtle)" }}>
-                    {content.length} characters
+                  <span style={{ fontSize: "0.75rem", color: "var(--text-subtle)" }}>
+                    {content.length} chars
                   </span>
                 </div>
                 <textarea
@@ -342,23 +340,23 @@ export default function EditNote() {
               </div>
 
               {/* Pin & Archive Toggles */}
-              <div className="row g-3 form-group-modern">
+              <div className="row g-2 form-group-modern">
                 <div className="col-12 col-md-6">
                   <div
                     className={`switch-control-card ${isPinned ? "active" : ""}`}
                     onClick={() => setIsPinned(!isPinned)}
                   >
-                    <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-                      <Pin size={18} color={isPinned ? "var(--primary-light)" : "var(--text-muted)"} />
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                      <Pin size={16} color={isPinned ? "var(--primary)" : "var(--text-muted)"} />
                       <div>
-                        <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--text-main)" }}>Pin Note</div>
-                        <div style={{ fontSize: "0.76rem", color: "var(--text-muted)" }}>
-                          Keep this note at the top
+                        <div style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--text-main)" }}>Pin Note</div>
+                        <div style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>
+                          Keep this note at top of dashboard
                         </div>
                       </div>
                     </div>
                     <div className="switch-indicator-circle">
-                      {isPinned && <Check size={14} />}
+                      {isPinned && <Check size={12} />}
                     </div>
                   </div>
                 </div>
@@ -368,12 +366,12 @@ export default function EditNote() {
                     className={`switch-control-card ${isArchived ? "active" : ""}`}
                     onClick={() => setIsArchived(!isArchived)}
                   >
-                    <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-                      <Archive size={18} color={isArchived ? "var(--accent-amber)" : "var(--text-muted)"} />
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                      <Archive size={16} color={isArchived ? "var(--accent-amber)" : "var(--text-muted)"} />
                       <div>
-                        <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--text-main)" }}>Archive Note</div>
-                        <div style={{ fontSize: "0.76rem", color: "var(--text-muted)" }}>
-                          Keep in archive folder
+                        <div style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--text-main)" }}>Archive Note</div>
+                        <div style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>
+                          Store away from main workspace
                         </div>
                       </div>
                     </div>
@@ -384,7 +382,7 @@ export default function EditNote() {
                         borderColor: isArchived ? "var(--accent-amber)" : "var(--surface-border-strong)",
                       }}
                     >
-                      {isArchived && <Check size={14} />}
+                      {isArchived && <Check size={12} />}
                     </div>
                   </div>
                 </div>
@@ -397,7 +395,7 @@ export default function EditNote() {
                   className="btn-brand-secondary"
                   onClick={() => navigate(-1)}
                 >
-                  <ArrowLeft size={16} />
+                  <ArrowLeft size={15} />
                   <span>Back</span>
                 </button>
 
@@ -412,20 +410,28 @@ export default function EditNote() {
             </form>
           ) : (
             /* Live Preview Mode */
-            <div style={{ padding: "0.5rem 0" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "1rem" }}>
+            <div style={{ padding: "0.25rem 0" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.45rem", marginBottom: "0.85rem" }}>
                 <span className={`badge-pill ${catMeta.colorClass}`}>
                   {catMeta.icon} {selectedCategory}
                 </span>
-                {isPinned && <span className="badge-pill cat-badge-dsa">📌 Pinned</span>}
-                {isArchived && <span className="badge-pill cat-badge-javascript">📦 Archived</span>}
+                {isPinned && (
+                  <span className="badge-pill cat-badge-dsa" style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
+                    <Pin size={11} /> Pinned
+                  </span>
+                )}
+                {isArchived && (
+                  <span className="badge-pill cat-badge-javascript" style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
+                    <Archive size={11} /> Archived
+                  </span>
+                )}
               </div>
 
-              <h2 style={{ fontSize: "1.8rem", fontWeight: 800, color: "var(--text-main)", marginBottom: "0.75rem" }}>
+              <h2 style={{ fontSize: "1.5rem", fontWeight: 700, color: "var(--text-main)", marginBottom: "0.6rem" }}>
                 {title || "Untitled Note"}
               </h2>
 
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", marginBottom: "1.5rem" }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem", marginBottom: "1.25rem" }}>
                 {tags.map((t) => (
                   <span key={t} className="topic-chip">
                     #{t}
@@ -435,15 +441,15 @@ export default function EditNote() {
 
               <div
                 style={{
-                  background: "var(--surface-hover)",
-                  padding: "1.5rem",
-                  borderRadius: "var(--radius-lg)",
-                  fontSize: "1rem",
-                  lineHeight: 1.7,
+                  background: "var(--surface-subtle)",
+                  padding: "1.25rem",
+                  borderRadius: "var(--radius-md)",
+                  fontSize: "0.92rem",
+                  lineHeight: 1.65,
                   whiteSpace: "pre-wrap",
                   color: "var(--text-main)",
                   border: "1px solid var(--surface-border)",
-                  marginBottom: "1.5rem",
+                  marginBottom: "1.25rem",
                 }}
               >
                 {content || "No content..."}
@@ -455,7 +461,7 @@ export default function EditNote() {
                   className="btn-brand-secondary"
                   onClick={() => setActiveTab("edit")}
                 >
-                  <Edit3 size={15} />
+                  <Edit3 size={14} />
                   <span>Back to Edit</span>
                 </button>
                 <button

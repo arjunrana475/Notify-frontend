@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Search, X, Loader2, Pin, ArrowRight, CornerDownLeft, Sparkles } from "lucide-react";
+import { Search, X, Loader2, Pin, ArrowRight, CornerDownLeft } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import API from "../services/api.js";
 import { getCategoryMeta } from "../constants/category.js";
@@ -32,11 +32,11 @@ export default function SearchBar({
   useEffect(() => {
     const handleGlobalKeyDown = (e) => {
       // Don't intercept if user is typing in another input or textarea
-      const targetTag = e.target.tagName.toLowerCase();
+      const targetTag = e.target.tagName?.toLowerCase();
       if (targetTag === "input" || targetTag === "textarea" || e.target.isContentEditable) {
         if (e.target === inputRef.current && e.key === "Escape") {
           setIsOpen(false);
-          inputRef.current.blur();
+          inputRef.current?.blur();
         }
         return;
       }
@@ -110,13 +110,9 @@ export default function SearchBar({
       return;
     }
 
-    // Fast live search debounce
     debounceTimer.current = setTimeout(() => {
       fetchLiveResults(val);
-      if (onSearch && location.pathname === "/") {
-        onSearch(val);
-      }
-    }, 240);
+    }, 200);
   };
 
   const handleClear = () => {
@@ -197,9 +193,9 @@ export default function SearchBar({
         {/* Search / Spinner Icon */}
         <div className="search-bar-lead-icon">
           {isLoading ? (
-            <Loader2 size={16} className="animate-spin text-primary" style={{ animation: "spin 1s linear infinite" }} />
+            <Loader2 size={15} style={{ animation: "spin 1s linear infinite", color: "var(--primary)" }} />
           ) : (
-            <Search size={16} color="var(--text-muted)" />
+            <Search size={15} color="var(--text-muted)" />
           )}
         </div>
 
@@ -232,7 +228,7 @@ export default function SearchBar({
               title="Clear search (Esc)"
               aria-label="Clear search"
             >
-              <X size={14} />
+              <X size={13} />
             </button>
           ) : (
             <div className="search-shortcut-badge" title="Press Ctrl+K or / to search">
@@ -245,12 +241,12 @@ export default function SearchBar({
 
       {/* Live Search Results Dropdown Overlay */}
       {isOpen && search.trim() && (
-        <div className="search-dropdown-glass glass-panel" ref={dropdownRef} role="listbox">
+        <div className="search-dropdown-glass" ref={dropdownRef} role="listbox">
           {/* Header */}
           <div className="search-dropdown-header">
             <span className="search-dropdown-heading">
-              <Sparkles size={13} color="var(--primary-light)" />
-              <span>{results.length > 0 ? `Found ${results.length} notes` : "Search Results"}</span>
+              <Search size={12} color="var(--text-muted)" />
+              <span>{results.length > 0 ? `${results.length} results` : "Search Results"}</span>
             </span>
             <span className="search-dropdown-shortcut-hint">
               <span>Navigate</span> <kbd>↑</kbd> <kbd>↓</kbd> <span>Select</span> <kbd>↵</kbd>
@@ -258,14 +254,14 @@ export default function SearchBar({
           </div>
 
           {/* Results List */}
-          {results.length === 0 ? (
+          {results.length === 0 && !isLoading ? (
             <div className="search-empty-dropdown">
-              <span style={{ fontSize: "1.4rem", marginBottom: "0.3rem" }}>🔍</span>
-              <span style={{ fontWeight: 600, color: "var(--text-main)", fontSize: "0.9rem" }}>
+              <Search size={24} style={{ opacity: 0.35, marginBottom: "0.35rem", color: "var(--text-muted)" }} />
+              <span style={{ fontWeight: 600, color: "var(--text-main)", fontSize: "0.85rem" }}>
                 No notes found
               </span>
-              <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
-                No matches for "{search}". Try searching another topic or title.
+              <span style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>
+                No matches for "{search}".
               </span>
             </div>
           ) : (
@@ -298,14 +294,14 @@ export default function SearchBar({
                     {note.content && (
                       <p className="search-result-snippet">
                         {highlightMatch(
-                          note.content.length > 95 ? `${note.content.slice(0, 95)}...` : note.content,
+                          note.content.length > 90 ? `${note.content.slice(0, 90)}...` : note.content,
                           search
                         )}
                       </p>
                     )}
 
                     <div className="search-result-meta">
-                      <span className={`badge-pill ${meta.colorClass}`} style={{ fontSize: "0.7rem", padding: "0.15rem 0.5rem" }}>
+                      <span className={`badge-pill ${meta.colorClass}`} style={{ fontSize: "0.68rem", padding: "0.1rem 0.45rem" }}>
                         {note.category}
                       </span>
 
@@ -321,7 +317,7 @@ export default function SearchBar({
 
                       <span className="search-result-open-hint">
                         <span>Open</span>
-                        <ArrowRight size={12} />
+                        <ArrowRight size={11} />
                       </span>
                     </div>
                   </div>
@@ -333,9 +329,9 @@ export default function SearchBar({
           {/* Footer View All CTA */}
           {results.length > 0 && (
             <div className="search-dropdown-footer" onClick={() => handleSubmit()}>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.45rem" }}>
-                <CornerDownLeft size={13} color="var(--primary-light)" />
-                <span>View all results for "{search}" on workspace</span>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                <CornerDownLeft size={12} color="var(--text-muted)" />
+                <span>View all matching notes</span>
               </div>
               <span className="search-count-pill">{results.length}</span>
             </div>

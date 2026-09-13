@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import API from "../services/api.js";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
-import { Sparkles, User, Mail, Lock, Eye, EyeOff, ArrowRight, Sun, Moon } from "lucide-react";
+import { FileText, User, Mail, Lock, Eye, EyeOff, ArrowRight, Sun, Moon } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 
 export default function Register() {
@@ -47,7 +47,7 @@ export default function Register() {
         email,
         password,
       });
-      toast.success(response.data.message || "Registration successful! 🎉");
+      toast.success(response.data.message || "Registration successful");
       setFormData({
         name: "",
         email: "",
@@ -56,7 +56,7 @@ export default function Register() {
       });
       setTimeout(() => {
         navigate("/login");
-      }, 750);
+      }, 500);
     } catch (error) {
       if (error.response?.data?.message) {
         toast.error(error.response.data.message);
@@ -80,7 +80,7 @@ export default function Register() {
       }}
     >
       {/* Top right theme toggle */}
-      <div style={{ position: "absolute", top: "1.5rem", right: "1.5rem", zIndex: 10 }}>
+      <div style={{ position: "absolute", top: "1.25rem", right: "1.25rem", zIndex: 10 }}>
         <button
           type="button"
           className="nb-theme-btn"
@@ -88,70 +88,42 @@ export default function Register() {
           title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
           aria-label="Toggle theme"
         >
-          {isDark ? <Sun size={17} color="#fbbf24" /> : <Moon size={17} color="#6366f1" />}
+          {isDark ? <Sun size={16} /> : <Moon size={16} />}
         </button>
       </div>
-
-      {/* Ambient background glows */}
-      <div
-        style={{
-          position: "absolute",
-          top: "12%",
-          right: "20%",
-          width: "350px",
-          height: "350px",
-          borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, transparent 70%)",
-          filter: "blur(40px)",
-          pointerEvents: "none",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          bottom: "12%",
-          left: "20%",
-          width: "350px",
-          height: "350px",
-          borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(168, 85, 247, 0.18) 0%, transparent 70%)",
-          filter: "blur(40px)",
-          pointerEvents: "none",
-        }}
-      />
 
       <div
         className="glass-panel animate-fade-in"
         style={{
           width: "100%",
-          maxWidth: "460px",
-          padding: "2.5rem 2.2rem",
+          maxWidth: "420px",
+          padding: "2rem",
           position: "relative",
           zIndex: 2,
         }}
       >
         {/* Brand Header */}
-        <div style={{ textAlign: "center", marginBottom: "1.75rem" }}>
+        <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
           <div
             style={{
-              width: "52px",
-              height: "52px",
-              borderRadius: "16px",
-              background: "linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)",
+              width: "42px",
+              height: "42px",
+              borderRadius: "var(--radius-md)",
+              background: "var(--primary)",
               color: "white",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              margin: "0 auto 1rem",
-              boxShadow: "0 8px 20px -3px rgba(99, 102, 241, 0.45)",
+              margin: "0 auto 0.85rem",
+              boxShadow: "var(--shadow-xs)",
             }}
           >
-            <Sparkles size={26} />
+            <FileText size={20} />
           </div>
-          <h1 style={{ fontSize: "1.8rem", fontWeight: 800, color: "var(--text-main)", marginBottom: "0.3rem" }}>
+          <h1 style={{ fontSize: "1.45rem", fontWeight: 700, color: "var(--text-main)", marginBottom: "0.25rem" }}>
             Create an Account
           </h1>
-          <p style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>
+          <p style={{ color: "var(--text-muted)", fontSize: "0.85rem" }}>
             Start capturing, categorizing, and organizing notes
           </p>
         </div>
@@ -159,15 +131,15 @@ export default function Register() {
         {/* Registration Form */}
         <form onSubmit={handleSubmit}>
           {/* Full Name */}
-          <div style={{ marginBottom: "1.1rem" }}>
+          <div style={{ marginBottom: "1rem" }}>
             <label
               htmlFor="name"
               style={{
                 display: "block",
-                fontSize: "0.85rem",
-                fontWeight: 700,
+                fontSize: "0.82rem",
+                fontWeight: 600,
                 color: "var(--text-main)",
-                marginBottom: "0.4rem",
+                marginBottom: "0.35rem",
                 fontFamily: "var(--font-display)",
               }}
             >
@@ -175,10 +147,10 @@ export default function Register() {
             </label>
             <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
               <User
-                size={18}
+                size={16}
                 style={{
                   position: "absolute",
-                  left: "14px",
+                  left: "12px",
                   color: "var(--text-muted)",
                   pointerEvents: "none",
                 }}
@@ -188,7 +160,7 @@ export default function Register() {
                 id="name"
                 name="name"
                 className="input-modern"
-                style={{ paddingLeft: "2.5rem" }}
+                style={{ paddingLeft: "2.3rem" }}
                 placeholder="e.g. Alex Morgan"
                 value={name}
                 required
@@ -198,15 +170,15 @@ export default function Register() {
           </div>
 
           {/* Email */}
-          <div style={{ marginBottom: "1.1rem" }}>
+          <div style={{ marginBottom: "1rem" }}>
             <label
               htmlFor="email"
               style={{
                 display: "block",
-                fontSize: "0.85rem",
-                fontWeight: 700,
+                fontSize: "0.82rem",
+                fontWeight: 600,
                 color: "var(--text-main)",
-                marginBottom: "0.4rem",
+                marginBottom: "0.35rem",
                 fontFamily: "var(--font-display)",
               }}
             >
@@ -214,10 +186,10 @@ export default function Register() {
             </label>
             <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
               <Mail
-                size={18}
+                size={16}
                 style={{
                   position: "absolute",
-                  left: "14px",
+                  left: "12px",
                   color: "var(--text-muted)",
                   pointerEvents: "none",
                 }}
@@ -227,7 +199,7 @@ export default function Register() {
                 id="email"
                 name="email"
                 className="input-modern"
-                style={{ paddingLeft: "2.5rem" }}
+                style={{ paddingLeft: "2.3rem" }}
                 placeholder="name@example.com"
                 value={email}
                 autoComplete="email"
@@ -238,15 +210,15 @@ export default function Register() {
           </div>
 
           {/* Password */}
-          <div style={{ marginBottom: "1.1rem" }}>
+          <div style={{ marginBottom: "1rem" }}>
             <label
               htmlFor="password"
               style={{
                 display: "block",
-                fontSize: "0.85rem",
-                fontWeight: 700,
+                fontSize: "0.82rem",
+                fontWeight: 600,
                 color: "var(--text-main)",
-                marginBottom: "0.4rem",
+                marginBottom: "0.35rem",
                 fontFamily: "var(--font-display)",
               }}
             >
@@ -254,10 +226,10 @@ export default function Register() {
             </label>
             <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
               <Lock
-                size={18}
+                size={16}
                 style={{
                   position: "absolute",
-                  left: "14px",
+                  left: "12px",
                   color: "var(--text-muted)",
                   pointerEvents: "none",
                 }}
@@ -268,7 +240,7 @@ export default function Register() {
                 name="password"
                 autoComplete="new-password"
                 className="input-modern"
-                style={{ paddingLeft: "2.5rem", paddingRight: "2.5rem" }}
+                style={{ paddingLeft: "2.3rem", paddingRight: "2.3rem" }}
                 placeholder="At least 6 characters"
                 value={password}
                 required
@@ -279,7 +251,7 @@ export default function Register() {
                 onClick={() => setShowPassword(!showPassword)}
                 style={{
                   position: "absolute",
-                  right: "12px",
+                  right: "10px",
                   background: "none",
                   border: "none",
                   color: "var(--text-muted)",
@@ -290,21 +262,21 @@ export default function Register() {
                 title={showPassword ? "Hide password" : "Show password"}
                 aria-label="Toggle password visibility"
               >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
           </div>
 
           {/* Confirm Password */}
-          <div style={{ marginBottom: "1.6rem" }}>
+          <div style={{ marginBottom: "1.4rem" }}>
             <label
               htmlFor="confirmPassword"
               style={{
                 display: "block",
-                fontSize: "0.85rem",
-                fontWeight: 700,
+                fontSize: "0.82rem",
+                fontWeight: 600,
                 color: "var(--text-main)",
-                marginBottom: "0.4rem",
+                marginBottom: "0.35rem",
                 fontFamily: "var(--font-display)",
               }}
             >
@@ -312,10 +284,10 @@ export default function Register() {
             </label>
             <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
               <Lock
-                size={18}
+                size={16}
                 style={{
                   position: "absolute",
-                  left: "14px",
+                  left: "12px",
                   color: "var(--text-muted)",
                   pointerEvents: "none",
                 }}
@@ -326,7 +298,7 @@ export default function Register() {
                 name="confirmPassword"
                 autoComplete="new-password"
                 className="input-modern"
-                style={{ paddingLeft: "2.5rem" }}
+                style={{ paddingLeft: "2.3rem" }}
                 placeholder="Re-enter password"
                 value={confirmPassword}
                 required
@@ -339,19 +311,19 @@ export default function Register() {
           <button
             type="submit"
             className="btn-brand-primary"
-            style={{ width: "100%", padding: "0.75rem", fontSize: "0.95rem" }}
+            style={{ width: "100%", padding: "0.6rem", fontSize: "0.9rem" }}
             disabled={loading}
           >
             <span>{loading ? "Creating Account..." : "Create Account"}</span>
-            {!loading && <ArrowRight size={16} />}
+            {!loading && <ArrowRight size={15} />}
           </button>
         </form>
 
         {/* Footer Link */}
-        <div style={{ textAlign: "center", marginTop: "1.5rem", paddingTop: "1.2rem", borderTop: "1px solid var(--surface-border)" }}>
-          <p style={{ fontSize: "0.88rem", color: "var(--text-muted)", margin: 0 }}>
+        <div style={{ textAlign: "center", marginTop: "1.35rem", paddingTop: "1rem", borderTop: "1px solid var(--surface-border)" }}>
+          <p style={{ fontSize: "0.82rem", color: "var(--text-muted)", margin: 0 }}>
             Already have an account?{" "}
-            <Link to="/login" style={{ fontWeight: 700, color: "var(--primary-light)" }}>
+            <Link to="/login" style={{ fontWeight: 600, color: "var(--primary)" }}>
               Sign In
             </Link>
           </p>

@@ -5,7 +5,7 @@ export default function StaticsCard({
   icon,
   title,
   value,
-  accentColor = "#6366f1",
+  accentColor = "var(--primary)",
   buttonText = "View Details",
   buttonLink = "/",
   onClick,
@@ -25,90 +25,72 @@ export default function StaticsCard({
     <div
       className="glass-card"
       style={{
-        padding: "1.4rem",
+        padding: "1.15rem",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-        minHeight: "185px",
+        minHeight: "155px",
         position: "relative",
-        overflow: "hidden",
       }}
     >
-      {/* Ambient background glow */}
-      <div
-        style={{
-          position: "absolute",
-          top: "-20px",
-          right: "-20px",
-          width: "90px",
-          height: "90px",
-          borderRadius: "50%",
-          background: accentColor,
-          opacity: 0.15,
-          filter: "blur(25px)",
-          pointerEvents: "none",
-        }}
-      />
-
       {/* Top row: Icon Capsule + Metric Value */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.75rem" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
         <div
           style={{
-            width: "46px",
-            height: "46px",
+            width: "36px",
+            height: "36px",
             borderRadius: "var(--radius-md)",
-            background: `color-mix(in srgb, ${accentColor} 14%, transparent)`,
-            border: `1px solid color-mix(in srgb, ${accentColor} 28%, transparent)`,
+            background: "var(--surface-subtle)",
+            border: "1px solid var(--surface-border)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontSize: "1.4rem",
-            boxShadow: `0 4px 12px color-mix(in srgb, ${accentColor} 15%, transparent)`,
+            color: accentColor,
           }}
         >
           {icon}
         </div>
-        <h2
+        <div
           style={{
-            fontSize: "2.3rem",
-            fontWeight: 800,
+            fontSize: "1.85rem",
+            fontWeight: 700,
             fontFamily: "var(--font-display)",
             color: "var(--text-main)",
-            margin: 0,
             lineHeight: 1,
+            letterSpacing: "-0.02em",
           }}
         >
           {value}
-        </h2>
+        </div>
       </div>
 
       {/* Middle row: Title */}
       <div>
-        <h4
+        <div
           style={{
-            fontSize: "0.95rem",
-            fontWeight: 600,
+            fontSize: "0.85rem",
+            fontWeight: 500,
             color: "var(--text-muted)",
-            marginBottom: "0.9rem",
+            marginBottom: "0.75rem",
           }}
         >
           {title}
-        </h4>
+        </div>
       </div>
 
-      {/* Bottom row: Interactive link / button */}
+      {/* Bottom row: Clean action button */}
       <button
         type="button"
         onClick={handleClick}
         style={{
           width: "100%",
-          padding: "0.55rem 0.9rem",
+          padding: "0.4rem 0.75rem",
           borderRadius: "var(--radius-md)",
-          background: "var(--surface-hover)",
+          background: "var(--surface-subtle)",
           border: "1px solid var(--surface-border)",
           color: "var(--text-main)",
-          fontSize: "0.85rem",
-          fontWeight: 600,
+          fontSize: "0.8rem",
+          fontWeight: 500,
           fontFamily: "var(--font-display)",
           display: "flex",
           alignItems: "center",
@@ -117,18 +99,16 @@ export default function StaticsCard({
           transition: "all var(--transition-fast)",
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.background = `color-mix(in srgb, ${accentColor} 15%, transparent)`;
-          e.currentTarget.style.borderColor = `color-mix(in srgb, ${accentColor} 40%, transparent)`;
-          e.currentTarget.style.color = accentColor;
+          e.currentTarget.style.background = "var(--surface-hover)";
+          e.currentTarget.style.borderColor = "var(--surface-border-strong)";
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.background = "var(--surface-hover)";
+          e.currentTarget.style.background = "var(--surface-subtle)";
           e.currentTarget.style.borderColor = "var(--surface-border)";
-          e.currentTarget.style.color = "var(--text-main)";
         }}
       >
         <span>{buttonText}</span>
-        <ArrowRight size={15} />
+        <ArrowRight size={13} color="var(--text-muted)" />
       </button>
     </div>
   );

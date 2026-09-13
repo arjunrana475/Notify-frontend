@@ -11,9 +11,9 @@ export const categoryMeta = {
   DSA: {
     icon: "⚡",
     colorClass: "cat-badge-dsa",
-    bg: "#eef2ff",
-    color: "#4f46e5",
-    border: "#c7d2fe",
+    bg: "#eff6ff",
+    color: "#1d4ed8",
+    border: "#bfdbfe",
     desc: "Algorithms, Data Structures & Problem Solving",
   },
   Projects: {
@@ -35,9 +35,9 @@ export const categoryMeta = {
   React: {
     icon: "⚛️",
     colorClass: "cat-badge-react",
-    bg: "#f0f9ff",
-    color: "#0369a1",
-    border: "#bae6fd",
+    bg: "#f0fdfa",
+    color: "#0f766e",
+    border: "#99f6e4",
     desc: "Hooks, components, state management & UI",
   },
   MERN: {
@@ -52,7 +52,7 @@ export const categoryMeta = {
     icon: "🌐",
     colorClass: "cat-badge-webdev",
     bg: "#faf5ff",
-    color: "#7e22ce",
+    color: "#6b21a8",
     border: "#e9d5ff",
     desc: "Web development fundamentals, APIs & protocols",
   },
@@ -82,11 +82,11 @@ export const getCategoryMeta = (catName, customMetas = {}) => {
 
   // Dynamic fallback for any custom category
   return {
-    icon: "✨",
+    icon: "📁",
     colorClass: "cat-badge-other",
-    bg: "rgba(99, 102, 241, 0.12)",
-    color: "#6366f1",
-    border: "rgba(99, 102, 241, 0.3)",
+    bg: "rgba(59, 130, 246, 0.12)",
+    color: "#3b82f6",
+    border: "rgba(59, 130, 246, 0.28)",
     desc: `${catName} category notes and snippets`,
     isCustom: true,
   };

@@ -1,6 +1,6 @@
-import { Sparkles } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
-export default function Loader({ message = "Loading your workspace..." }) {
+export default function Loader({ message = "Loading..." }) {
   return (
     <div
       style={{
@@ -8,40 +8,23 @@ export default function Loader({ message = "Loading your workspace..." }) {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        minHeight: "65vh",
-        gap: "1.2rem",
+        minHeight: "50vh",
+        gap: "0.85rem",
       }}
     >
-      <div
-        style={{
-          position: "relative",
-          width: "56px",
-          height: "56px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            borderRadius: "50%",
-            border: "3px solid var(--primary-subtle)",
-            borderTopColor: "var(--primary)",
-            animation: "spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite",
-          }}
-        />
-        <Sparkles size={22} color="var(--primary-light)" />
-      </div>
+      <Loader2
+        size={24}
+        color="var(--primary)"
+        style={{ animation: "spin 1s linear infinite" }}
+      />
 
       <p
         style={{
           color: "var(--text-muted)",
-          fontSize: "0.92rem",
-          fontWeight: 600,
+          fontSize: "0.88rem",
+          fontWeight: 500,
           fontFamily: "var(--font-display)",
-          letterSpacing: "-0.01em",
+          margin: 0,
         }}
       >
         {message}

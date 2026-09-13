@@ -4,6 +4,7 @@ import API from "../services/api.js";
 import { toast } from "react-toastify";
 import Navigation from "../components/Navbar";
 import { useCategory } from "../context/CategoryContext";
+import { useAuth } from "../context/AuthContext";
 import {
   FilePlus,
   Pin,
@@ -22,13 +23,18 @@ import "../styles/CreateNote.css";
 
 export default function CreateNote() {
   const navigate = useNavigate();
+  const { isLoggedIn, loading: authLoading } = useAuth();
   const { categories, getMeta, openCreateModal } = useCategory();
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("edit"); // "edit" | "preview"
 
   useEffect(() => {
     document.title = "Create New Note | Notify";
-  }, []);
+    if (!authLoading && !isLoggedIn) {
+      toast.info("Please sign in to create notes");
+      navigate("/login");
+    }
+  }, [authLoading, isLoggedIn, navigate]);
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -94,9 +100,9 @@ export default function CreateNote() {
         isArchived,
       };
 
-      const response = await API.post("/api/notes/", notePayload);
+      const response = await API.post("/api/notes", notePayload);
 
-      toast.success(response.data?.message || "Note created successfully! 🚀");
+      toast.success(response.data?.message || "Note created successfully");
       navigate("/");
     } catch (error) {
       if (error.response) {
@@ -109,7 +115,7 @@ export default function CreateNote() {
     }
   };
 
-  const catMeta = getCategoryMeta(selectedCategory);
+  const catMeta = getMeta(selectedCategory);
 
   return (
     <>
@@ -121,12 +127,12 @@ export default function CreateNote() {
           <div className="editor-header">
             <div className="editor-header-title">
               <div className="editor-header-icon">
-                <FilePlus size={22} />
+                <FilePlus size={20} />
               </div>
               <div>
-                <h1 style={{ fontSize: "1.45rem", margin: 0, color: "var(--text-main)" }}>Create New Note</h1>
-                <p style={{ fontSize: "0.82rem", color: "var(--text-muted)", margin: 0 }}>
-                  Capture knowledge, code snippets, or ideas.
+                <h1 style={{ fontSize: "1.3rem", fontWeight: 700, margin: 0, color: "var(--text-main)" }}>Create New Note</h1>
+                <p style={{ fontSize: "0.8rem", color: "var(--text-muted)", margin: 0 }}>
+                  Capture knowledge, code snippets, or notes.
                 </p>
               </div>
             </div>
@@ -135,8 +141,8 @@ export default function CreateNote() {
             <div
               style={{
                 display: "flex",
-                background: "var(--surface-hover)",
-                padding: "3px",
+                background: "var(--surface-subtle)",
+                padding: "2px",
                 borderRadius: "var(--radius-md)",
                 border: "1px solid var(--surface-border)",
               }}
@@ -146,14 +152,14 @@ export default function CreateNote() {
                 className="btn-brand-ghost"
                 onClick={() => setActiveTab("edit")}
                 style={{
-                  padding: "0.35rem 0.8rem",
-                  fontSize: "0.82rem",
+                  padding: "0.3rem 0.7rem",
+                  fontSize: "0.8rem",
                   background: activeTab === "edit" ? "var(--surface)" : "transparent",
-                  color: activeTab === "edit" ? "var(--primary-light)" : "var(--text-muted)",
+                  color: activeTab === "edit" ? "var(--primary)" : "var(--text-muted)",
                   boxShadow: activeTab === "edit" ? "var(--shadow-xs)" : "none",
                 }}
               >
-                <Edit3 size={14} />
+                <Edit3 size={13} />
                 <span>Edit</span>
               </button>
               <button
@@ -161,15 +167,15 @@ export default function CreateNote() {
                 className="btn-brand-ghost"
                 onClick={() => setActiveTab("preview")}
                 style={{
-                  padding: "0.35rem 0.8rem",
-                  fontSize: "0.82rem",
+                  padding: "0.3rem 0.7rem",
+                  fontSize: "0.8rem",
                   background: activeTab === "preview" ? "var(--surface)" : "transparent",
-                  color: activeTab === "preview" ? "var(--primary-light)" : "var(--text-muted)",
+                  color: activeTab === "preview" ? "var(--primary)" : "var(--text-muted)",
                   boxShadow: activeTab === "preview" ? "var(--shadow-xs)" : "none",
                 }}
               >
-                <Eye size={14} />
-                <span>Live Preview</span>
+                <Eye size={13} />
+                <span>Preview</span>
               </button>
             </div>
           </div>
@@ -185,7 +191,7 @@ export default function CreateNote() {
                   id="title"
                   type="text"
                   className="input-modern"
-                  placeholder="e.g. Master Theorem & Dynamic Programming Paradigms"
+                  placeholder="e.g. System Design Patterns & Trade-offs"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   required
@@ -195,8 +201,8 @@ export default function CreateNote() {
               {/* Category Picker */}
               <div className="form-group-modern">
                 <label className="form-label-modern">
-                  <Layers size={15} />
-                  Select Category *
+                  <Layers size={14} />
+                  Category *
                 </label>
                 <div className="category-picker-grid">
                   {categories.map((cat) => {
@@ -219,16 +225,14 @@ export default function CreateNote() {
                     className="category-pick-btn"
                     style={{
                       borderStyle: "dashed",
-                      borderColor: "var(--primary-light)",
-                      color: "var(--primary-light)",
-                      background: "var(--primary-subtle)",
-                      fontWeight: 700,
+                      borderColor: "var(--surface-border-strong)",
+                      color: "var(--text-muted)",
                     }}
                     onClick={() => openCreateModal((newCatName) => setSelectedCategory(newCatName))}
                     title="Create custom category"
                   >
-                    <Plus size={15} />
-                    <span>+ New Category</span>
+                    <Plus size={14} />
+                    <span>New Category</span>
                   </button>
                 </div>
               </div>
@@ -236,8 +240,8 @@ export default function CreateNote() {
               {/* Topics / Tag Chips */}
               <div className="form-group-modern">
                 <label className="form-label-modern">
-                  <Tag size={15} />
-                  Topics & Tags (press Enter or comma to add)
+                  <Tag size={14} />
+                  Topics & Tags
                 </label>
                 <div className="tag-input-container">
                   {tags.map((t) => (
@@ -249,14 +253,14 @@ export default function CreateNote() {
                         onClick={() => handleRemoveTag(t)}
                         title="Remove tag"
                       >
-                        <X size={12} />
+                        <X size={11} />
                       </button>
                     </span>
                   ))}
                   <input
                     type="text"
                     className="tag-inline-input"
-                    placeholder={tags.length === 0 ? "Type tag & hit Enter..." : "Add more tags..."}
+                    placeholder={tags.length === 0 ? "Type tag & hit Enter..." : "Add tags..."}
                     value={tagInput}
                     onChange={(e) => setTagInput(e.target.value)}
                     onKeyDown={handleTagKeyDown}
@@ -270,14 +274,14 @@ export default function CreateNote() {
               {/* Link Input */}
               <div className="form-group-modern">
                 <label className="form-label-modern" htmlFor="link">
-                  <LinkIcon size={15} />
-                  Resource / Chat URL (Optional)
+                  <LinkIcon size={14} />
+                  Resource URL (Optional)
                 </label>
                 <input
                   id="link"
                   type="url"
                   className="input-modern"
-                  placeholder="https://chatgpt.com/... or documentation link"
+                  placeholder="https://..."
                   value={link}
                   onChange={(e) => setLink(e.target.value)}
                 />
@@ -285,18 +289,18 @@ export default function CreateNote() {
 
               {/* Content Body */}
               <div className="form-group-modern">
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.4rem" }}>
                   <label className="form-label-modern" htmlFor="content" style={{ margin: 0 }}>
                     Note Content *
                   </label>
-                  <span style={{ fontSize: "0.78rem", color: "var(--text-subtle)" }}>
-                    {content.length} characters
+                  <span style={{ fontSize: "0.75rem", color: "var(--text-subtle)" }}>
+                    {content.length} chars
                   </span>
                 </div>
                 <textarea
                   id="content"
                   className="textarea-modern"
-                  placeholder="Write your thoughts, code snippets, notes, or copy-paste ideas..."
+                  placeholder="Write your notes, code snippets, or thoughts..."
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   rows="8"
@@ -305,23 +309,23 @@ export default function CreateNote() {
               </div>
 
               {/* Pin & Archive Toggles */}
-              <div className="row g-3 form-group-modern">
+              <div className="row g-2 form-group-modern">
                 <div className="col-12 col-md-6">
                   <div
                     className={`switch-control-card ${isPinned ? "active" : ""}`}
                     onClick={() => setIsPinned(!isPinned)}
                   >
-                    <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-                      <Pin size={18} color={isPinned ? "var(--primary-light)" : "var(--text-muted)"} />
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                      <Pin size={16} color={isPinned ? "var(--primary)" : "var(--text-muted)"} />
                       <div>
-                        <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--text-main)" }}>Pin Note</div>
-                        <div style={{ fontSize: "0.76rem", color: "var(--text-muted)" }}>
-                          Keep this note at the top of your dashboard
+                        <div style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--text-main)" }}>Pin Note</div>
+                        <div style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>
+                          Keep at top of dashboard
                         </div>
                       </div>
                     </div>
                     <div className="switch-indicator-circle">
-                      {isPinned && <Check size={14} />}
+                      {isPinned && <Check size={12} />}
                     </div>
                   </div>
                 </div>
@@ -331,12 +335,12 @@ export default function CreateNote() {
                     className={`switch-control-card ${isArchived ? "active" : ""}`}
                     onClick={() => setIsArchived(!isArchived)}
                   >
-                    <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-                      <Archive size={18} color={isArchived ? "var(--accent-amber)" : "var(--text-muted)"} />
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                      <Archive size={16} color={isArchived ? "var(--accent-amber)" : "var(--text-muted)"} />
                       <div>
-                        <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--text-main)" }}>Archive Note</div>
-                        <div style={{ fontSize: "0.76rem", color: "var(--text-muted)" }}>
-                          Store away from main view
+                        <div style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--text-main)" }}>Archive Note</div>
+                        <div style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>
+                          Store away from main workspace
                         </div>
                       </div>
                     </div>
@@ -347,7 +351,7 @@ export default function CreateNote() {
                         borderColor: isArchived ? "var(--accent-amber)" : "var(--surface-border-strong)",
                       }}
                     >
-                      {isArchived && <Check size={14} />}
+                      {isArchived && <Check size={12} />}
                     </div>
                   </div>
                 </div>
@@ -360,7 +364,7 @@ export default function CreateNote() {
                   className="btn-brand-secondary"
                   onClick={() => navigate(-1)}
                 >
-                  <ArrowLeft size={16} />
+                  <ArrowLeft size={15} />
                   <span>Cancel</span>
                 </button>
 
@@ -369,26 +373,34 @@ export default function CreateNote() {
                   className="btn-brand-primary"
                   disabled={loading}
                 >
-                  {loading ? "Publishing..." : "Save Note (Ctrl+Enter)"}
+                  {loading ? "Saving..." : "Save Note (Ctrl+Enter)"}
                 </button>
               </div>
             </form>
           ) : (
             /* Live Preview Mode */
-            <div style={{ padding: "0.5rem 0" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "1rem" }}>
+            <div style={{ padding: "0.25rem 0" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.45rem", marginBottom: "0.85rem" }}>
                 <span className={`badge-pill ${catMeta.colorClass}`}>
                   {catMeta.icon} {selectedCategory}
                 </span>
-                {isPinned && <span className="badge-pill cat-badge-dsa">📌 Pinned</span>}
-                {isArchived && <span className="badge-pill cat-badge-javascript">📦 Archived</span>}
+                {isPinned && (
+                  <span className="badge-pill cat-badge-dsa" style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
+                    <Pin size={11} /> Pinned
+                  </span>
+                )}
+                {isArchived && (
+                  <span className="badge-pill cat-badge-javascript" style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
+                    <Archive size={11} /> Archived
+                  </span>
+                )}
               </div>
 
-              <h2 style={{ fontSize: "1.8rem", fontWeight: 800, color: "var(--text-main)", marginBottom: "0.75rem" }}>
+              <h2 style={{ fontSize: "1.5rem", fontWeight: 700, color: "var(--text-main)", marginBottom: "0.6rem" }}>
                 {title || "Untitled Note"}
               </h2>
 
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", marginBottom: "1.5rem" }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem", marginBottom: "1.25rem" }}>
                 {tags.map((t) => (
                   <span key={t} className="topic-chip">
                     #{t}
@@ -398,30 +410,30 @@ export default function CreateNote() {
 
               <div
                 style={{
-                  background: "var(--surface-hover)",
-                  padding: "1.5rem",
-                  borderRadius: "var(--radius-lg)",
-                  fontSize: "1rem",
-                  lineHeight: 1.7,
+                  background: "var(--surface-subtle)",
+                  padding: "1.25rem",
+                  borderRadius: "var(--radius-md)",
+                  fontSize: "0.92rem",
+                  lineHeight: 1.65,
                   whiteSpace: "pre-wrap",
                   color: "var(--text-main)",
                   border: "1px solid var(--surface-border)",
-                  marginBottom: "1.5rem",
+                  marginBottom: "1.25rem",
                 }}
               >
                 {content || "No content entered yet..."}
               </div>
 
               {link && (
-                <div style={{ marginBottom: "1.5rem" }}>
+                <div style={{ marginBottom: "1.25rem" }}>
                   <a
                     href={link}
                     target="_blank"
                     rel="noreferrer"
                     className="btn-brand-secondary"
-                    style={{ fontSize: "0.85rem" }}
+                    style={{ fontSize: "0.8rem" }}
                   >
-                    <LinkIcon size={14} />
+                    <LinkIcon size={13} />
                     <span>Attached Link: {link}</span>
                   </a>
                 </div>
@@ -433,7 +445,7 @@ export default function CreateNote() {
                   className="btn-brand-secondary"
                   onClick={() => setActiveTab("edit")}
                 >
-                  <Edit3 size={15} />
+                  <Edit3 size={14} />
                   <span>Back to Edit</span>
                 </button>
                 <button
@@ -442,7 +454,7 @@ export default function CreateNote() {
                   onClick={handleSubmit}
                   disabled={loading}
                 >
-                  {loading ? "Publishing..." : "Publish Note"}
+                  {loading ? "Saving..." : "Save Note"}
                 </button>
               </div>
             </div>

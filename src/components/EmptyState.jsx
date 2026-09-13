@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
-import { Plus } from "lucide-react";
+import { Plus, FileText } from "lucide-react";
 
 export default function EmptyState({
-  emoji = "📝",
+  icon,
+  emoji,
   title = "No notes found",
   subtitle = "Get started by creating your first note or trying a different filter.",
   actionText = "Create Note",
@@ -13,44 +14,48 @@ export default function EmptyState({
     <div
       className="glass-card animate-fade-in"
       style={{
-        padding: "3.5rem 2rem",
+        padding: "3rem 1.5rem",
         textAlign: "center",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
         width: "100%",
-        maxWidth: "580px",
-        margin: "2rem auto",
+        maxWidth: "520px",
+        margin: "1.5rem auto",
         position: "relative",
-        overflow: "hidden",
       }}
     >
-      {/* Background glow halo */}
+      {/* Clean Icon Capsule */}
       <div
         style={{
-          width: "110px",
-          height: "110px",
-          borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, transparent 70%)",
+          width: "48px",
+          height: "48px",
+          borderRadius: "var(--radius-lg)",
+          background: "var(--surface-subtle)",
+          border: "1px solid var(--surface-border)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          marginBottom: "1.25rem",
-          animation: "pulseGlow 3s ease-in-out infinite",
+          marginBottom: "1rem",
+          color: "var(--text-muted)",
         }}
       >
-        <span style={{ fontSize: "3.2rem", filter: "drop-shadow(0 4px 12px rgba(99, 102, 241, 0.3))" }}>
-          {emoji}
-        </span>
+        {icon ? (
+          icon
+        ) : emoji ? (
+          <span style={{ fontSize: "1.5rem" }}>{emoji}</span>
+        ) : (
+          <FileText size={22} color="var(--text-muted)" />
+        )}
       </div>
 
       <h3
         style={{
-          fontSize: "1.45rem",
-          fontWeight: 700,
+          fontSize: "1.15rem",
+          fontWeight: 600,
           color: "var(--text-main)",
-          marginBottom: "0.5rem",
+          marginBottom: "0.35rem",
           fontFamily: "var(--font-display)",
         }}
       >
@@ -60,10 +65,10 @@ export default function EmptyState({
       <p
         style={{
           color: "var(--text-muted)",
-          fontSize: "0.92rem",
-          maxWidth: "400px",
-          marginBottom: "1.75rem",
-          lineHeight: 1.55,
+          fontSize: "0.85rem",
+          maxWidth: "380px",
+          marginBottom: "1.4rem",
+          lineHeight: 1.5,
         }}
       >
         {subtitle}
@@ -76,12 +81,12 @@ export default function EmptyState({
           className="btn-brand-primary"
           style={{ cursor: "pointer" }}
         >
-          <Plus size={17} />
+          <Plus size={15} />
           <span>{actionText}</span>
         </button>
       ) : actionText && actionLink ? (
         <Link to={actionLink} className="btn-brand-primary">
-          <Plus size={17} />
+          <Plus size={15} />
           <span>{actionText}</span>
         </Link>
       ) : null}

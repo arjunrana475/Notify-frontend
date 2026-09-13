@@ -6,11 +6,10 @@ import { useCategory } from "../context/CategoryContext";
 import { Pin, Archive, ExternalLink } from "lucide-react";
 import "../styles/NoteCard.css";
 
-const NoteCard = ({ note }) => {
+const NoteCard = ({ note, onNoteUpdated }) => {
   const navigate = useNavigate();
   const { getMeta } = useCategory();
   const [currentNote, setCurrentNote] = useState(note);
-  const [categoryCount, setCategoryCount] = useState(0);
 
   // Sync if prop note changes
   useEffect(() => {
@@ -23,19 +22,19 @@ const NoteCard = ({ note }) => {
 
     try {
       // Optimistic update
-      setCurrentNote((prev) => ({ ...prev, isPinned: isPinning }));
+      const updated = { ...currentNote, isPinned: isPinning };
+      setCurrentNote(updated);
+      if (onNoteUpdated) onNoteUpdated(updated);
 
-      const response = await API.patch(
-        `/api/notes/${currentNote._id}/pin`
-      );
-
+      const response = await API.patch(`/api/notes/${currentNote._id}/pin`);
       if (response.data.note) {
         setCurrentNote(response.data.note);
+        if (onNoteUpdated) onNoteUpdated(response.data.note);
       }
 
       Swal.fire({
         icon: "success",
-        title: isPinning ? "Note Pinned 📌" : "Note Unpinned",
+        title: isPinning ? "Note Pinned" : "Note Unpinned",
         timer: 1000,
         showConfirmButton: false,
         toast: true,
@@ -43,7 +42,9 @@ const NoteCard = ({ note }) => {
       });
     } catch {
       // Revert on error
-      setCurrentNote((prev) => ({ ...prev, isPinned: !isPinning }));
+      const reverted = { ...currentNote, isPinned: !isPinning };
+      setCurrentNote(reverted);
+      if (onNoteUpdated) onNoteUpdated(reverted);
       Swal.fire({
         icon: "error",
         title: "Failed to update pin",
@@ -61,26 +62,28 @@ const NoteCard = ({ note }) => {
 
     try {
       // Optimistic update
-      setCurrentNote((prev) => ({ ...prev, isArchived: isArchiving }));
+      const updated = { ...currentNote, isArchived: isArchiving };
+      setCurrentNote(updated);
+      if (onNoteUpdated) onNoteUpdated(updated);
 
-      const response = await API.patch(
-        `/api/notes/${currentNote._id}/archive`
-      );
-
+      const response = await API.patch(`/api/notes/${currentNote._id}/archive`);
       if (response.data.note) {
         setCurrentNote(response.data.note);
+        if (onNoteUpdated) onNoteUpdated(response.data.note);
       }
 
       Swal.fire({
         icon: "success",
-        title: isArchiving ? "Note Archived 📦" : "Note Unarchived",
+        title: isArchiving ? "Note Archived" : "Note Restored",
         timer: 1000,
         showConfirmButton: false,
         toast: true,
         position: "bottom-end",
       });
     } catch {
-      setCurrentNote((prev) => ({ ...prev, isArchived: !isArchiving }));
+      const reverted = { ...currentNote, isArchived: !isArchiving };
+      setCurrentNote(reverted);
+      if (onNoteUpdated) onNoteUpdated(reverted);
       Swal.fire({
         icon: "error",
         title: "Failed to update archive",
@@ -92,31 +95,21 @@ const NoteCard = ({ note }) => {
     }
   };
 
-  useEffect(() => {
-    const fetchCategoryCount = async () => {
-      if (!currentNote.category) return;
-      try {
-        const response = await API.get(
-          `/api/notes/category/${encodeURIComponent(
-            currentNote.category
-          )}/count`
-        );
-        setCategoryCount(response.data.count);
-      } catch {
-        // silent fallback
-      }
-    };
-    fetchCategoryCount();
-  }, [currentNote.category]);
-
   const catMeta = getMeta(currentNote.category);
-  const authorName = currentNote.user?.name || "Author";
-  const authorInitials = authorName
-    .split(" ")
-    .map((n) => n[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
+  const authorName =
+    typeof currentNote.user === "object" && currentNote.user?.name
+      ? currentNote.user.name
+      : "Author";
+  const authorInitials = (
+    authorName.trim()
+      ? authorName
+          .trim()
+          .split(/\s+/)
+          .map((n) => n[0])
+          .slice(0, 2)
+          .join("")
+      : "A"
+  ).toUpperCase();
 
   const formattedDate = currentNote.createdAt
     ? new Date(currentNote.createdAt).toLocaleDateString("en-US", {
@@ -149,7 +142,6 @@ const NoteCard = ({ note }) => {
           >
             <span>{catMeta.icon}</span>
             <span>{currentNote.category}</span>
-            {categoryCount > 0 && <span className="note-cat-count">{categoryCount}</span>}
           </div>
         ) : (
           <div className="note-category-tag cat-badge-other">
@@ -229,7 +221,7 @@ const NoteCard = ({ note }) => {
             onClick={(e) => e.stopPropagation()}
             title="Open attached resource"
           >
-            <ExternalLink size={12} />
+            <ExternalLink size={11} />
             <span>Link</span>
           </a>
         )}

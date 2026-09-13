@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Navigation from "../components/Navbar";
-import { Home, Plus, ArrowLeft, Search, Compass, BookOpen } from "lucide-react";
+import { Home, Plus, ArrowLeft, Compass } from "lucide-react";
 import { category } from "../constants/category.js";
 
 export default function NotFound() {
@@ -18,54 +18,26 @@ export default function NotFound() {
       <main
         className="container-fluid"
         style={{
-          maxWidth: "860px",
-          padding: "2rem 1.25rem 5rem",
+          maxWidth: "780px",
+          padding: "2rem 1.25rem 4rem",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          minHeight: "75vh",
+          minHeight: "70vh",
           position: "relative",
         }}
       >
-        {/* Ambient Glows */}
-        <div
-          style={{
-            position: "absolute",
-            top: "10%",
-            left: "15%",
-            width: "300px",
-            height: "300px",
-            borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, transparent 70%)",
-            filter: "blur(50px)",
-            pointerEvents: "none",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            bottom: "15%",
-            right: "15%",
-            width: "280px",
-            height: "280px",
-            borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(236, 72, 153, 0.2) 0%, transparent 70%)",
-            filter: "blur(50px)",
-            pointerEvents: "none",
-          }}
-        />
-
         <div
           className="glass-panel animate-fade-in"
           style={{
             width: "100%",
-            padding: "3.5rem 2rem",
+            padding: "3rem 2rem",
             textAlign: "center",
             position: "relative",
             zIndex: 2,
             border: "1px solid var(--surface-border)",
-            borderRadius: "var(--radius-xl)",
+            borderRadius: "var(--radius-lg)",
           }}
         >
           {/* Badge */}
@@ -73,34 +45,32 @@ export default function NotFound() {
             style={{
               display: "inline-flex",
               alignItems: "center",
-              gap: "0.5rem",
-              padding: "0.4rem 1rem",
-              borderRadius: "var(--radius-pill)",
-              background: "rgba(244, 63, 94, 0.12)",
-              border: "1px solid rgba(244, 63, 94, 0.3)",
+              gap: "0.45rem",
+              padding: "0.3rem 0.75rem",
+              borderRadius: "var(--radius-xs)",
+              background: "rgba(244, 63, 94, 0.1)",
+              border: "1px solid rgba(244, 63, 94, 0.25)",
               color: "var(--accent-rose)",
-              fontSize: "0.85rem",
-              fontWeight: 700,
-              marginBottom: "1.5rem",
-              letterSpacing: "0.04em",
+              fontSize: "0.78rem",
+              fontWeight: 600,
+              marginBottom: "1.25rem",
+              letterSpacing: "0.02em",
               textTransform: "uppercase",
             }}
           >
-            <Compass size={16} />
-            <span>404 Error • Lost in Space</span>
+            <Compass size={14} />
+            <span>404 Error • Page Not Found</span>
           </div>
 
-          {/* Large 404 Headline */}
+          {/* 404 Headline */}
           <h1
             style={{
-              fontSize: "clamp(3.5rem, 8vw, 6rem)",
-              fontWeight: 900,
-              letterSpacing: "-0.04em",
+              fontSize: "clamp(3rem, 6vw, 4.5rem)",
+              fontWeight: 800,
+              letterSpacing: "-0.03em",
               lineHeight: 1,
-              marginBottom: "1rem",
-              background: "linear-gradient(135deg, var(--primary) 0%, #ec4899 50%, var(--secondary) 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
+              marginBottom: "0.75rem",
+              color: "var(--text-main)",
             }}
           >
             404
@@ -108,22 +78,22 @@ export default function NotFound() {
 
           <h2
             style={{
-              fontSize: "clamp(1.25rem, 3vw, 1.75rem)",
-              fontWeight: 700,
+              fontSize: "clamp(1.1rem, 2.5vw, 1.4rem)",
+              fontWeight: 600,
               color: "var(--text-main)",
-              marginBottom: "0.75rem",
+              marginBottom: "0.6rem",
             }}
           >
-            Oops! This page took a wrong turn.
+            Page not found
           </h2>
 
           <p
             style={{
               color: "var(--text-muted)",
-              fontSize: "1rem",
-              maxWidth: "520px",
-              margin: "0 auto 2.2rem",
-              lineHeight: 1.6,
+              fontSize: "0.9rem",
+              maxWidth: "460px",
+              margin: "0 auto 1.75rem",
+              lineHeight: 1.5,
             }}
           >
             The note, category, or URL you are looking for might have been removed, renamed, or is temporarily unavailable.
@@ -136,35 +106,35 @@ export default function NotFound() {
               flexWrap: "wrap",
               alignItems: "center",
               justifyContent: "center",
-              gap: "0.85rem",
-              marginBottom: "2.5rem",
+              gap: "0.65rem",
+              marginBottom: "2rem",
             }}
           >
             <button
               type="button"
               onClick={() => navigate(-1)}
               className="btn-brand-secondary"
-              style={{ padding: "0.7rem 1.4rem" }}
+              style={{ padding: "0.55rem 1.15rem" }}
             >
-              <ArrowLeft size={17} />
+              <ArrowLeft size={15} />
               <span>Go Back</span>
             </button>
 
             <Link
               to="/"
               className="btn-brand-primary"
-              style={{ padding: "0.7rem 1.4rem" }}
+              style={{ padding: "0.55rem 1.15rem" }}
             >
-              <Home size={17} />
+              <Home size={15} />
               <span>Workspace Home</span>
             </Link>
 
             <Link
               to="/createNote"
               className="btn-brand-secondary"
-              style={{ padding: "0.7rem 1.4rem" }}
+              style={{ padding: "0.55rem 1.15rem" }}
             >
-              <Plus size={17} />
+              <Plus size={15} />
               <span>Create Note</span>
             </Link>
           </div>
@@ -172,19 +142,19 @@ export default function NotFound() {
           {/* Quick Categories Navigation */}
           <div
             style={{
-              paddingTop: "1.75rem",
+              paddingTop: "1.5rem",
               borderTop: "1px solid var(--surface-border)",
             }}
           >
             <span
               style={{
                 display: "block",
-                fontSize: "0.8rem",
-                fontWeight: 700,
+                fontSize: "0.76rem",
+                fontWeight: 600,
                 color: "var(--text-subtle)",
                 textTransform: "uppercase",
-                letterSpacing: "0.06em",
-                marginBottom: "0.85rem",
+                letterSpacing: "0.04em",
+                marginBottom: "0.75rem",
               }}
             >
               Or explore popular topics
@@ -195,7 +165,7 @@ export default function NotFound() {
                 display: "flex",
                 flexWrap: "wrap",
                 justifyContent: "center",
-                gap: "0.45rem",
+                gap: "0.35rem",
               }}
             >
               {category.slice(0, 6).map((catName) => (
@@ -203,7 +173,7 @@ export default function NotFound() {
                   key={catName}
                   to={`/category/${encodeURIComponent(catName)}`}
                   className="badge-pill cat-badge-other"
-                  style={{ fontSize: "0.82rem", padding: "0.35rem 0.75rem" }}
+                  style={{ fontSize: "0.78rem", padding: "0.25rem 0.65rem" }}
                 >
                   {catName}
                 </Link>

@@ -26,7 +26,6 @@ export default function NoteDetails() {
   const { getMeta } = useCategory();
   const [note, setNote] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [categoryCount, setCategoryCount] = useState(0);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -39,16 +38,6 @@ export default function NoteDetails() {
           document.title = `${response.data.title} | Notify`;
         } else {
           document.title = "Note Details | Notify";
-        }
-
-        // Fetch category count
-        if (response.data?.category) {
-          const categoryResponse = await API.get(
-            `/api/notes/category/${encodeURIComponent(
-              response.data.category
-            )}/count`
-          );
-          setCategoryCount(categoryResponse.data.count);
         }
       } catch (error) {
         Swal.fire({
@@ -83,7 +72,7 @@ export default function NoteDetails() {
 
       Swal.fire({
         icon: "success",
-        title: isPinning ? "Note Pinned 📌" : "Note Unpinned",
+        title: isPinning ? "Note Pinned" : "Note Unpinned",
         timer: 1000,
         showConfirmButton: false,
         toast: true,
@@ -105,7 +94,7 @@ export default function NoteDetails() {
 
       Swal.fire({
         icon: "success",
-        title: isArchiving ? "Note Archived 📦" : "Note Restored",
+        title: isArchiving ? "Note Archived" : "Note Restored",
         timer: 1000,
         showConfirmButton: false,
         toast: true,
@@ -122,9 +111,9 @@ export default function NoteDetails() {
       text: "This action is permanent and cannot be undone.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#e11d48",
-      cancelButtonColor: "#94a3b8",
-      confirmButtonText: "Yes, Delete",
+      confirmButtonColor: "var(--accent-rose)",
+      cancelButtonColor: "var(--text-muted)",
+      confirmButtonText: "Delete",
       cancelButtonText: "Cancel",
       reverseButtons: true,
     });
@@ -137,8 +126,7 @@ export default function NoteDetails() {
       await Swal.fire({
         icon: "success",
         title: "Note Deleted",
-        text: "The note has been removed.",
-        timer: 1400,
+        timer: 1200,
         showConfirmButton: false,
       });
 
@@ -156,7 +144,7 @@ export default function NoteDetails() {
     return (
       <>
         <Navigation />
-        <Loader message="Loading note details..." />
+        <Loader message="Loading note..." />
       </>
     );
   }
@@ -195,10 +183,10 @@ export default function NoteDetails() {
             <button
               className="btn-brand-ghost"
               onClick={() => navigate(-1)}
-              style={{ padding: "0.4rem 0.8rem", fontSize: "0.88rem" }}
+              style={{ padding: "0.35rem 0.7rem", fontSize: "0.85rem" }}
             >
-              <ArrowLeft size={16} />
-              <span>Back to notes</span>
+              <ArrowLeft size={15} />
+              <span>Back</span>
             </button>
 
             <div className="details-action-group">
@@ -208,11 +196,11 @@ export default function NoteDetails() {
                 onClick={handlePin}
                 style={{
                   background: note.isPinned ? "var(--primary-subtle)" : "transparent",
-                  color: note.isPinned ? "var(--primary-light)" : "var(--text-muted)",
+                  color: note.isPinned ? "var(--primary)" : "var(--text-muted)",
                 }}
                 title={note.isPinned ? "Unpin note" : "Pin note"}
               >
-                <Pin size={16} fill={note.isPinned ? "currentColor" : "none"} />
+                <Pin size={14} fill={note.isPinned ? "currentColor" : "none"} />
                 <span>{note.isPinned ? "Pinned" : "Pin"}</span>
               </button>
 
@@ -221,12 +209,12 @@ export default function NoteDetails() {
                 className="btn-brand-ghost"
                 onClick={handleArchive}
                 style={{
-                  background: note.isArchived ? "rgba(245, 158, 11, 0.15)" : "transparent",
+                  background: note.isArchived ? "rgba(245, 158, 11, 0.12)" : "transparent",
                   color: note.isArchived ? "var(--accent-amber)" : "var(--text-muted)",
                 }}
                 title={note.isArchived ? "Unarchive note" : "Archive note"}
               >
-                <Archive size={16} fill={note.isArchived ? "currentColor" : "none"} />
+                <Archive size={14} fill={note.isArchived ? "currentColor" : "none"} />
                 <span>{note.isArchived ? "Archived" : "Archive"}</span>
               </button>
 
@@ -234,9 +222,9 @@ export default function NoteDetails() {
                 type="button"
                 className="btn-brand-secondary"
                 onClick={() => navigate(`/edit-note/${id}`)}
-                style={{ padding: "0.45rem 0.9rem", fontSize: "0.85rem" }}
+                style={{ padding: "0.35rem 0.75rem", fontSize: "0.82rem" }}
               >
-                <Edit size={15} />
+                <Edit size={14} />
                 <span>Edit</span>
               </button>
 
@@ -244,9 +232,9 @@ export default function NoteDetails() {
                 type="button"
                 className="btn-brand-ghost nb-dropdown-danger"
                 onClick={handleDelete}
-                style={{ padding: "0.45rem 0.8rem", fontSize: "0.85rem" }}
+                style={{ padding: "0.35rem 0.7rem", fontSize: "0.82rem" }}
               >
-                <Trash2 size={15} />
+                <Trash2 size={14} />
                 <span>Delete</span>
               </button>
             </div>
@@ -254,13 +242,13 @@ export default function NoteDetails() {
 
           {/* Category Pill */}
           {note.category && (
-            <div style={{ marginBottom: "1rem" }}>
+            <div style={{ marginBottom: "0.85rem" }}>
               <Link
                 to={`/category/${encodeURIComponent(note.category)}`}
                 className={`badge-pill ${catMeta.isCustom ? "" : catMeta.colorClass}`}
                 style={{
-                  fontSize: "0.85rem",
-                  padding: "0.4rem 0.9rem",
+                  fontSize: "0.8rem",
+                  padding: "0.3rem 0.7rem",
                   background: catMeta.isCustom ? catMeta.bg : undefined,
                   color: catMeta.isCustom ? catMeta.color : undefined,
                   borderColor: catMeta.isCustom ? catMeta.border : undefined,
@@ -268,18 +256,6 @@ export default function NoteDetails() {
               >
                 <span>{catMeta.icon}</span>
                 <span>{note.category}</span>
-                {categoryCount > 0 && (
-                  <span
-                    style={{
-                      background: "rgba(0,0,0,0.08)",
-                      padding: "1px 6px",
-                      borderRadius: "8px",
-                      fontSize: "0.72rem",
-                    }}
-                  >
-                    {categoryCount} notes
-                  </span>
-                )}
               </Link>
             </div>
           )}
@@ -292,16 +268,16 @@ export default function NoteDetails() {
             <div className="details-author-chip">
               <div
                 style={{
-                  width: "28px",
-                  height: "28px",
+                  width: "22px",
+                  height: "22px",
                   borderRadius: "50%",
-                  background: "linear-gradient(135deg, var(--primary), var(--secondary))",
+                  background: "var(--primary)",
                   color: "white",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: "0.75rem",
-                  fontWeight: 700,
+                  fontSize: "0.68rem",
+                  fontWeight: 600,
                 }}
               >
                 {authorInitials}
@@ -310,12 +286,12 @@ export default function NoteDetails() {
             </div>
 
             <div className="details-meta-item">
-              <Calendar size={14} />
+              <Calendar size={13} />
               <span>{formattedDate}</span>
             </div>
 
             <div className="details-meta-item">
-              <Clock size={14} />
+              <Clock size={13} />
               <span>~{readTime} min read ({wordCount} words)</span>
             </div>
           </div>
@@ -330,7 +306,7 @@ export default function NoteDetails() {
                   <span
                     key={i}
                     className="topic-chip"
-                    style={{ fontSize: "0.82rem", padding: "0.3rem 0.75rem", cursor: "pointer" }}
+                    style={{ fontSize: "0.78rem", padding: "0.25rem 0.65rem", cursor: "pointer" }}
                     onClick={() => navigate(`/?topic=${encodeURIComponent(cleanTag)}`)}
                     title={`Browse notes tagged with #${cleanTag}`}
                   >
@@ -344,31 +320,31 @@ export default function NoteDetails() {
           {/* External Link Card if attached */}
           {note.link && (
             <div className="details-link-card">
-              <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.65rem" }}>
                 <div
                   style={{
-                    width: "38px",
-                    height: "38px",
-                    borderRadius: "10px",
-                    background: "var(--primary-subtle)",
-                    border: "1px solid var(--primary-border)",
+                    width: "32px",
+                    height: "32px",
+                    borderRadius: "var(--radius-sm)",
+                    background: "var(--surface)",
+                    border: "1px solid var(--surface-border)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    color: "var(--primary-light)",
+                    color: "var(--primary)",
                   }}
                 >
-                  <ExternalLink size={18} />
+                  <ExternalLink size={15} />
                 </div>
                 <div>
-                  <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "var(--text-main)" }}>
+                  <div style={{ fontWeight: 600, fontSize: "0.82rem", color: "var(--text-main)" }}>
                     Attached Resource
                   </div>
                   <div
                     style={{
-                      fontSize: "0.78rem",
+                      fontSize: "0.74rem",
                       color: "var(--text-muted)",
-                      maxWidth: "420px",
+                      maxWidth: "400px",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                       whiteSpace: "nowrap",
@@ -384,10 +360,10 @@ export default function NoteDetails() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-brand-primary"
-                style={{ padding: "0.45rem 1rem", fontSize: "0.82rem" }}
+                style={{ padding: "0.35rem 0.8rem", fontSize: "0.78rem" }}
               >
-                <span>Open Resource</span>
-                <ExternalLink size={14} />
+                <span>Open Link</span>
+                <ExternalLink size={12} />
               </a>
             </div>
           )}
@@ -401,13 +377,13 @@ export default function NoteDetails() {
             >
               {copied ? (
                 <>
-                  <Check size={14} color="var(--accent-emerald)" />
-                  <span style={{ color: "var(--accent-emerald)" }}>Copied!</span>
+                  <Check size={13} color="var(--accent-emerald)" />
+                  <span style={{ color: "var(--accent-emerald)" }}>Copied</span>
                 </>
               ) : (
                 <>
-                  <Copy size={14} />
-                  <span>Copy Text</span>
+                  <Copy size={13} />
+                  <span>Copy</span>
                 </>
               )}
             </button>
@@ -418,8 +394,8 @@ export default function NoteDetails() {
           {/* Bottom Footer Row */}
           <div className="details-bottom-bar">
             <button className="btn-brand-secondary" onClick={() => navigate(-1)}>
-              <ArrowLeft size={16} />
-              <span>Back to Workspace</span>
+              <ArrowLeft size={15} />
+              <span>Back to Notes</span>
             </button>
 
             <button
@@ -429,12 +405,12 @@ export default function NoteDetails() {
                   navigator.share({ title: note.title, text: note.content, url: window.location.href });
                 } else {
                   navigator.clipboard.writeText(window.location.href);
-                  Swal.fire({ icon: "success", title: "Link Copied!", timer: 1000, showConfirmButton: false, toast: true });
+                  Swal.fire({ icon: "success", title: "Link Copied", timer: 1000, showConfirmButton: false, toast: true });
                 }
               }}
             >
-              <Share2 size={16} />
-              <span>Share Note</span>
+              <Share2 size={15} />
+              <span>Share</span>
             </button>
           </div>
         </div>

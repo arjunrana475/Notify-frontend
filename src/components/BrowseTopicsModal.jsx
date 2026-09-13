@@ -4,13 +4,9 @@ import {
   Tag,
   Search,
   X,
-  Sparkles,
   ArrowRight,
   SlidersHorizontal,
-  FileText,
   Pin,
-  ExternalLink,
-  Layers,
 } from "lucide-react";
 import { useCategory } from "../context/CategoryContext";
 import "../styles/BrowseTopicsModal.css";
@@ -83,7 +79,7 @@ export default function BrowseTopicsModal({
         setSelectedTopic(topicStats[0].name);
       }
     }
-  }, [isOpen, topicStats]);
+  }, [isOpen, topicStats, selectedTopic]);
 
   // Close on Escape key
   useEffect(() => {
@@ -110,43 +106,42 @@ export default function BrowseTopicsModal({
       <div className="topic-modal-card" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="topic-modal-header">
-          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.65rem" }}>
             <div
               style={{
-                width: "42px",
-                height: "42px",
+                width: "36px",
+                height: "36px",
                 borderRadius: "var(--radius-md)",
-                background: "var(--accent-emerald-subtle, rgba(16, 185, 129, 0.15))",
-                border: "1px solid rgba(16, 185, 129, 0.3)",
+                background: "var(--surface-subtle)",
+                border: "1px solid var(--surface-border)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                color: "var(--accent-emerald)",
-                fontSize: "1.25rem",
+                color: "var(--text-muted)",
               }}
             >
-              🏷️
+              <Tag size={17} />
             </div>
             <div>
               <h3
                 style={{
-                  fontSize: "1.2rem",
-                  fontWeight: 800,
+                  fontSize: "1.1rem",
+                  fontWeight: 700,
                   color: "var(--text-main)",
                   margin: 0,
                   fontFamily: "var(--font-display)",
                 }}
               >
-                Browse Notes by Topics & Tags
+                Topics & Tags Explorer
               </h3>
               <p
                 style={{
-                  fontSize: "0.82rem",
+                  fontSize: "0.78rem",
                   color: "var(--text-muted)",
                   margin: 0,
                 }}
               >
-                Explore {topicStats.length} topics across {notes.length} notes in your workspace
+                {topicStats.length} topics across {notes.length} notes
               </p>
             </div>
           </div>
@@ -155,10 +150,10 @@ export default function BrowseTopicsModal({
             type="button"
             className="btn-brand-ghost"
             onClick={onClose}
-            style={{ padding: "0.45rem", borderRadius: "var(--radius-md)" }}
+            style={{ padding: "0.35rem", borderRadius: "var(--radius-md)" }}
             title="Close"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
@@ -170,16 +165,16 @@ export default function BrowseTopicsModal({
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              gap: "0.75rem",
+              gap: "0.65rem",
               flexWrap: "wrap",
             }}
           >
-            <div className="topic-search-box" style={{ flex: 1, minWidth: "240px" }}>
-              <Search size={17} color="var(--text-muted)" />
+            <div className="topic-search-box" style={{ flex: 1, minWidth: "220px" }}>
+              <Search size={15} color="var(--text-muted)" />
               <input
                 type="text"
                 className="topic-search-input"
-                placeholder="Search topics (e.g. leetcode, hooks, async)..."
+                placeholder="Search topics..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 autoFocus
@@ -196,30 +191,30 @@ export default function BrowseTopicsModal({
                     display: "flex",
                   }}
                 >
-                  <X size={15} />
+                  <X size={14} />
                 </button>
               )}
             </div>
 
             <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
-              <SlidersHorizontal size={15} color="var(--text-muted)" />
+              <SlidersHorizontal size={14} color="var(--text-muted)" />
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
                 style={{
-                  padding: "0.55rem 0.85rem",
+                  padding: "0.45rem 0.75rem",
                   borderRadius: "var(--radius-md)",
                   border: "1px solid var(--surface-border)",
-                  background: "var(--surface-subtle)",
+                  background: "var(--surface)",
                   color: "var(--text-main)",
-                  fontSize: "0.85rem",
-                  fontWeight: 600,
+                  fontSize: "0.82rem",
+                  fontWeight: 500,
                   outline: "none",
                   cursor: "pointer",
                 }}
               >
-                <option value="count">Sort: Most Used 🔥</option>
-                <option value="alpha">Sort: Alphabetical 🔤</option>
+                <option value="count">Sort: Most Used</option>
+                <option value="alpha">Sort: Alphabetical (A-Z)</option>
               </select>
             </div>
           </div>
@@ -231,22 +226,22 @@ export default function BrowseTopicsModal({
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                marginBottom: "0.6rem",
+                marginBottom: "0.5rem",
               }}
             >
               <span
                 style={{
-                  fontSize: "0.78rem",
-                  fontWeight: 700,
+                  fontSize: "0.74rem",
+                  fontWeight: 600,
                   textTransform: "uppercase",
-                  letterSpacing: "0.05em",
+                  letterSpacing: "0.04em",
                   color: "var(--text-subtle)",
                 }}
               >
-                Available Topics ({filteredTopics.length})
+                Topics ({filteredTopics.length})
               </span>
               {selectedTopic && (
-                <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
+                <span style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>
                   Viewing #{selectedTopic}
                 </span>
               )}
@@ -255,18 +250,18 @@ export default function BrowseTopicsModal({
             {filteredTopics.length === 0 ? (
               <div
                 style={{
-                  padding: "2rem 1rem",
+                  padding: "1.5rem 1rem",
                   textAlign: "center",
                   background: "var(--surface-subtle)",
-                  borderRadius: "var(--radius-lg)",
+                  borderRadius: "var(--radius-md)",
                   border: "1px dashed var(--surface-border)",
                   color: "var(--text-muted)",
                 }}
               >
-                <Tag size={28} style={{ opacity: 0.5, marginBottom: "0.5rem" }} />
-                <p style={{ margin: 0, fontSize: "0.9rem", fontWeight: 600 }}>
+                <Tag size={22} style={{ opacity: 0.4, marginBottom: "0.35rem" }} />
+                <p style={{ margin: 0, fontSize: "0.85rem", fontWeight: 500 }}>
                   {topicStats.length === 0
-                    ? "No topics or tags found on your notes yet. Add tags like #react, #dsa when creating notes!"
+                    ? "No topics or tags found. Add tags like #react, #dsa when creating notes."
                     : `No topics match "${searchQuery}"`}
                 </p>
               </div>
@@ -283,7 +278,7 @@ export default function BrowseTopicsModal({
                       className={`topic-pill-btn ${isActive ? "active" : ""}`}
                       onClick={() => setSelectedTopic(topic.name)}
                     >
-                      <Tag size={13} />
+                      <Tag size={12} />
                       <span>#{topic.name}</span>
                       <span className="topic-pill-count">{topic.count}</span>
                     </button>
@@ -301,21 +296,20 @@ export default function BrowseTopicsModal({
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  marginBottom: "0.85rem",
+                  marginBottom: "0.65rem",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <Sparkles size={16} color="var(--primary-light)" />
+                <div style={{ display: "flex", alignItems: "center", gap: "0.45rem" }}>
                   <h4
                     style={{
-                      fontSize: "0.95rem",
-                      fontWeight: 700,
+                      fontSize: "0.88rem",
+                      fontWeight: 600,
                       color: "var(--text-main)",
                       margin: 0,
                     }}
                   >
-                    Notes tagged with #{selectedTopic}{" "}
-                    <span style={{ color: "var(--text-muted)", fontWeight: 500 }}>
+                    Notes tagged #{selectedTopic}{" "}
+                    <span style={{ color: "var(--text-muted)", fontWeight: 400 }}>
                       ({matchingNotes.length})
                     </span>
                   </h4>
@@ -325,14 +319,14 @@ export default function BrowseTopicsModal({
                   type="button"
                   className="btn-brand-primary"
                   onClick={() => handleApplyFilter(selectedTopic)}
-                  style={{ padding: "0.4rem 0.9rem", fontSize: "0.82rem" }}
+                  style={{ padding: "0.35rem 0.75rem", fontSize: "0.78rem" }}
                 >
-                  <span>Filter Workspace with #{selectedTopic}</span>
-                  <ArrowRight size={14} />
+                  <span>Filter by #{selectedTopic}</span>
+                  <ArrowRight size={13} />
                 </button>
               </div>
 
-              <div style={{ maxHeight: "240px", overflowY: "auto", paddingRight: "4px" }}>
+              <div style={{ maxHeight: "220px", overflowY: "auto", paddingRight: "4px" }}>
                 {matchingNotes.map((note) => {
                   const catMeta = getMeta(note.category);
                   return (
@@ -349,17 +343,17 @@ export default function BrowseTopicsModal({
                           style={{
                             display: "flex",
                             alignItems: "center",
-                            gap: "0.5rem",
-                            marginBottom: "0.25rem",
+                            gap: "0.4rem",
+                            marginBottom: "0.15rem",
                           }}
                         >
                           {note.isPinned && (
-                            <Pin size={13} color="var(--primary-light)" fill="currentColor" />
+                            <Pin size={12} color="var(--primary)" fill="currentColor" />
                           )}
                           <div
                             style={{
-                              fontWeight: 700,
-                              fontSize: "0.92rem",
+                              fontWeight: 600,
+                              fontSize: "0.88rem",
                               color: "var(--text-main)",
                               whiteSpace: "nowrap",
                               overflow: "hidden",
@@ -372,7 +366,7 @@ export default function BrowseTopicsModal({
 
                         <div
                           style={{
-                            fontSize: "0.8rem",
+                            fontSize: "0.76rem",
                             color: "var(--text-muted)",
                             whiteSpace: "nowrap",
                             overflow: "hidden",
@@ -383,13 +377,13 @@ export default function BrowseTopicsModal({
                         </div>
                       </div>
 
-                      <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                         {note.category && (
                           <span
                             className={`badge-pill ${catMeta.isCustom ? "" : catMeta.colorClass}`}
                             style={{
-                              fontSize: "0.75rem",
-                              padding: "0.2rem 0.6rem",
+                              fontSize: "0.7rem",
+                              padding: "0.15rem 0.45rem",
                               background: catMeta.isCustom ? catMeta.bg : undefined,
                               color: catMeta.isCustom ? catMeta.color : undefined,
                             }}
@@ -398,7 +392,7 @@ export default function BrowseTopicsModal({
                             <span>{note.category}</span>
                           </span>
                         )}
-                        <ArrowRight size={15} color="var(--text-muted)" />
+                        <ArrowRight size={14} color="var(--text-muted)" />
                       </div>
                     </div>
                   );
@@ -410,24 +404,24 @@ export default function BrowseTopicsModal({
 
         {/* Footer */}
         <div className="topic-modal-footer">
-          <div style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>
-            Tip: Click on any topic chip on note cards to quickly filter notes.
+          <div style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>
+            Tip: Click on topic chips on note cards to filter directly.
           </div>
 
-          <div style={{ display: "flex", gap: "0.6rem" }}>
+          <div style={{ display: "flex", gap: "0.5rem" }}>
             <button
               type="button"
               className="btn-brand-ghost"
               onClick={() => handleApplyFilter(null)}
-              style={{ fontSize: "0.85rem", padding: "0.45rem 0.9rem" }}
+              style={{ fontSize: "0.82rem", padding: "0.35rem 0.75rem" }}
             >
-              Clear Topic Filter
+              Clear Filter
             </button>
             <button
               type="button"
               className="btn-brand-secondary"
               onClick={onClose}
-              style={{ fontSize: "0.85rem", padding: "0.45rem 1rem" }}
+              style={{ fontSize: "0.82rem", padding: "0.35rem 0.85rem" }}
             >
               Close
             </button>

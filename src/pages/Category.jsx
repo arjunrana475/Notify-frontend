@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import API from "../services/api.js";
 import Loader from "../components/Loader";
@@ -17,28 +17,34 @@ export default function Category() {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchCategoryNotes = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await API.get(
+        `/api/notes/category/${encodeURIComponent(catParam)}`
+      );
+      setNotes(response.data.notes || []);
+    } catch (error) {
+      console.error("Failed to fetch category notes:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [catParam]);
+
   useEffect(() => {
     document.title = catParam ? `${catParam} Notes | Notify` : "Category Notes | Notify";
-    const fetchCategoryNotes = async () => {
-      try {
-        setLoading(true);
-        const response = await API.get(
-          `/api/notes/category/${encodeURIComponent(catParam)}`
-        );
-        setNotes(response.data.notes || []);
-      } catch (error) {
-        console.error("Failed to fetch category notes:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchCategoryNotes();
-  }, [catParam]);
+  }, [catParam, fetchCategoryNotes]);
+
+  const handleNoteUpdated = useCallback((updatedNote) => {
+    setNotes((prevNotes) =>
+      prevNotes.map((n) => (n._id === updatedNote._id ? updatedNote : n))
+    );
+  }, []);
 
   const meta = getMeta(catParam);
 
-  if (loading) {
+  if (loading && notes.length === 0) {
     return (
       <>
         <Navigation />
@@ -51,7 +57,7 @@ export default function Category() {
     <>
       <Navigation />
 
-      <main className="container-fluid" style={{ maxWidth: "1280px", padding: "1.5rem 1.25rem 4rem" }}>
+      <main className="container-fluid" style={{ maxWidth: "1240px", padding: "1.25rem 1.25rem 3.5rem" }}>
         {/* Category Hero Card */}
         <section
           className="category-hero-card animate-fade-in"
@@ -59,49 +65,33 @@ export default function Category() {
             borderColor: meta.border,
           }}
         >
-          {/* Ambient Glow */}
-          <div
-            style={{
-              position: "absolute",
-              top: "-50px",
-              right: "-50px",
-              width: "220px",
-              height: "220px",
-              borderRadius: "50%",
-              background: meta.color,
-              opacity: 0.16,
-              filter: "blur(35px)",
-              pointerEvents: "none",
-            }}
-          />
-
           <div className="category-hero-content">
             <div className="category-hero-left">
               <div
                 className="category-hero-icon"
                 style={{
                   background: meta.bg,
-                  border: `2px solid ${meta.border}`,
+                  borderColor: meta.border,
                 }}
               >
                 {meta.icon}
               </div>
 
               <div>
-                <div style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.3rem" }}>
+                <div style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.2rem" }}>
                   <span
                     style={{
-                      fontSize: "0.78rem",
-                      fontWeight: 700,
+                      fontSize: "0.74rem",
+                      fontWeight: 600,
                       textTransform: "uppercase",
-                      letterSpacing: "0.06em",
+                      letterSpacing: "0.04em",
                       color: meta.color,
                     }}
                   >
                     Category Hub
                   </span>
                   <span style={{ color: "var(--text-subtle)" }}>•</span>
-                  <span style={{ fontSize: "0.82rem", color: "var(--text-muted)", fontWeight: 600 }}>
+                  <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", fontWeight: 500 }}>
                     {notes.length} {notes.length === 1 ? "note" : "notes"}
                   </span>
                 </div>
@@ -111,22 +101,22 @@ export default function Category() {
               </div>
             </div>
 
-            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
               <button
                 className="btn-brand-secondary"
                 onClick={() => navigate(-1)}
-                style={{ padding: "0.6rem 1.1rem" }}
+                style={{ padding: "0.45rem 0.9rem" }}
               >
-                <ArrowLeft size={16} />
+                <ArrowLeft size={15} />
                 <span>Back</span>
               </button>
 
               <Link
                 to="/createNote"
                 className="btn-brand-primary"
-                style={{ padding: "0.6rem 1.25rem" }}
+                style={{ padding: "0.45rem 1rem" }}
               >
-                <Plus size={16} />
+                <Plus size={15} />
                 <span>New {catParam} Note</span>
               </Link>
             </div>
@@ -138,15 +128,15 @@ export default function Category() {
           <EmptyState
             emoji={meta.icon}
             title={`No notes in ${catParam} yet`}
-            subtitle={`Be the first to create a note or documentation for ${catParam}.`}
+            subtitle={`Create your first note for ${catParam}.`}
             actionText={`Add ${catParam} Note`}
             actionLink="/createNote"
           />
         ) : (
-          <div className="row g-3 g-md-4">
+          <div className="row g-3">
             {notes.map((note) => (
               <div className="col-12 col-md-6 col-lg-4" key={note._id}>
-                <NoteCard note={note} />
+                <NoteCard note={note} onNoteUpdated={handleNoteUpdated} />
               </div>
             ))}
           </div>

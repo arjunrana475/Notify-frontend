@@ -7,7 +7,7 @@ import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
 import { useCategory } from "../context/CategoryContext";
 import {
-  Sparkles,
+  FileText,
   Pin,
   Archive,
   Plus,
@@ -16,7 +16,6 @@ import {
   Menu,
   X,
   Layers,
-  BookOpen,
   Sun,
   Moon,
 } from "lucide-react";
@@ -50,10 +49,10 @@ const Navigation = ({ onSearch, initialSearch = "" }) => {
       text: "You can sign back in anytime to access your notes.",
       icon: "question",
       showCancelButton: true,
-      confirmButtonColor: "#6366f1",
-      cancelButtonColor: "#94a3b8",
-      confirmButtonText: "Yes, Sign Out",
-      cancelButtonText: "Stay",
+      confirmButtonColor: "var(--primary)",
+      cancelButtonColor: "var(--text-muted)",
+      confirmButtonText: "Sign Out",
+      cancelButtonText: "Cancel",
       reverseButtons: true,
     });
 
@@ -65,8 +64,7 @@ const Navigation = ({ onSearch, initialSearch = "" }) => {
       await Swal.fire({
         icon: "success",
         title: "Signed Out",
-        text: "See you soon!",
-        timer: 1400,
+        timer: 1200,
         showConfirmButton: false,
       });
 
@@ -102,7 +100,7 @@ const Navigation = ({ onSearch, initialSearch = "" }) => {
         {/* Brand Logo */}
         <Link to="/" className="nb-brand" onClick={() => setIsOpen(false)}>
           <div className="nb-logo-icon-box">
-            <Sparkles size={20} />
+            <FileText size={18} />
           </div>
           <div className="nb-brand-text">
             <span className="nb-wordmark">Notify</span>
@@ -125,13 +123,13 @@ const Navigation = ({ onSearch, initialSearch = "" }) => {
               onClick={() => setCategoryOpen((prev) => !prev)}
               aria-expanded={categoryOpen}
             >
-              <Layers size={16} color="var(--primary-light)" />
+              <Layers size={15} color="var(--text-muted)" />
               <span>Categories</span>
               <ChevronDown
-                size={14}
+                size={13}
                 style={{
                   transform: categoryOpen ? "rotate(180deg)" : "rotate(0deg)",
-                  transition: "transform 0.2s ease",
+                  transition: "transform 0.15s ease",
                 }}
               />
             </button>
@@ -159,11 +157,11 @@ const Navigation = ({ onSearch, initialSearch = "" }) => {
                   type="button"
                   className="nb-cat-menu-item"
                   style={{
-                    color: "var(--primary-light)",
-                    fontWeight: 700,
+                    color: "var(--primary)",
+                    fontWeight: 600,
                     borderTop: "1px solid var(--surface-border)",
-                    marginTop: "0.25rem",
-                    paddingTop: "0.6rem",
+                    marginTop: "0.2rem",
+                    paddingTop: "0.5rem",
                     background: "none",
                     border: "none",
                     width: "100%",
@@ -176,8 +174,8 @@ const Navigation = ({ onSearch, initialSearch = "" }) => {
                   }}
                 >
                   <div className="nb-cat-item-left">
-                    <Plus size={15} color="var(--primary-light)" />
-                    <span>+ New Category</span>
+                    <Plus size={14} color="var(--primary)" />
+                    <span>New Category</span>
                   </div>
                 </button>
               </div>
@@ -189,7 +187,7 @@ const Navigation = ({ onSearch, initialSearch = "" }) => {
             to="/get_all_pinned_notes"
             className={`nb-nav-link ${isActive("/get_all_pinned_notes") ? "active" : ""}`}
           >
-            <Pin size={15} />
+            <Pin size={14} />
             <span>Pinned</span>
           </Link>
 
@@ -197,7 +195,7 @@ const Navigation = ({ onSearch, initialSearch = "" }) => {
             to="/get_all_archived_notes"
             className={`nb-nav-link ${isActive("/get_all_archived_notes") ? "active" : ""}`}
           >
-            <Archive size={15} />
+            <Archive size={14} />
             <span>Archive</span>
           </Link>
 
@@ -209,12 +207,12 @@ const Navigation = ({ onSearch, initialSearch = "" }) => {
             title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
             aria-label="Toggle theme"
           >
-            {isDark ? <Sun size={17} color="#fbbf24" /> : <Moon size={17} color="#6366f1" />}
+            {isDark ? <Sun size={16} /> : <Moon size={16} />}
           </button>
 
           {/* New Note CTA */}
-          <Link to="/createNote" className="btn-brand-primary" style={{ padding: "0.5rem 1.1rem", fontSize: "0.88rem" }}>
-            <Plus size={16} />
+          <Link to="/createNote" className="btn-brand-primary" style={{ padding: "0.45rem 0.9rem", fontSize: "0.85rem" }}>
+            <Plus size={15} />
             <span>New Note</span>
           </Link>
 
@@ -229,13 +227,13 @@ const Navigation = ({ onSearch, initialSearch = "" }) => {
               >
                 <div className="nb-avatar-circle">{initials}</div>
                 <span className="nb-user-name">{user.name.split(" ")[0]}</span>
-                <ChevronDown size={13} color="var(--text-muted)" />
+                <ChevronDown size={12} color="var(--text-muted)" />
               </button>
 
               {userMenuOpen && (
                 <div className="nb-user-dropdown">
                   <div className="nb-user-dropdown-header">
-                    <div className="nb-avatar-circle" style={{ width: 38, height: 38 }}>
+                    <div className="nb-avatar-circle" style={{ width: 32, height: 32 }}>
                       {initials}
                     </div>
                     <div className="nb-user-dropdown-info">
@@ -251,24 +249,24 @@ const Navigation = ({ onSearch, initialSearch = "" }) => {
                       handleLogout();
                     }}
                   >
-                    <LogOut size={16} />
+                    <LogOut size={15} />
                     <span>Sign Out</span>
                   </button>
                 </div>
               )}
             </div>
           ) : (
-            <div style={{ display: "flex", gap: "0.5rem" }}>
+            <div style={{ display: "flex", gap: "0.4rem" }}>
               <button
                 className="btn-brand-secondary"
-                style={{ padding: "0.45rem 0.95rem", fontSize: "0.85rem" }}
+                style={{ padding: "0.4rem 0.85rem", fontSize: "0.82rem" }}
                 onClick={() => navigate("/login")}
               >
                 Sign In
               </button>
               <button
                 className="btn-brand-primary"
-                style={{ padding: "0.45rem 0.95rem", fontSize: "0.85rem" }}
+                style={{ padding: "0.4rem 0.85rem", fontSize: "0.82rem" }}
                 onClick={() => navigate("/register")}
               >
                 Sign Up
@@ -278,7 +276,7 @@ const Navigation = ({ onSearch, initialSearch = "" }) => {
         </div>
 
         {/* Mobile Actions (Theme + Menu) */}
-        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
           <button
             type="button"
             className="nb-theme-btn"
@@ -286,7 +284,7 @@ const Navigation = ({ onSearch, initialSearch = "" }) => {
             onClick={toggleTheme}
             title="Toggle theme"
           >
-            {isDark ? <Sun size={17} color="#fbbf24" /> : <Moon size={17} color="#6366f1" />}
+            {isDark ? <Sun size={16} /> : <Moon size={16} />}
           </button>
 
           <button
@@ -294,7 +292,7 @@ const Navigation = ({ onSearch, initialSearch = "" }) => {
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle navigation menu"
           >
-            {isOpen ? <X size={20} /> : <Menu size={20} />}
+            {isOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
         </div>
       </div>
@@ -302,18 +300,18 @@ const Navigation = ({ onSearch, initialSearch = "" }) => {
       {/* Mobile Drawer */}
       {isOpen && (
         <div className="glass-panel nb-mobile-drawer open">
-          <div style={{ marginBottom: "0.75rem" }}>
+          <div style={{ marginBottom: "0.5rem" }}>
             <SearchBar onSearch={onSearch} initialValue={initialSearch} />
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
             <Link
               to="/createNote"
               className="btn-brand-primary"
-              style={{ width: "100%", justifyContent: "center", marginBottom: "0.4rem" }}
+              style={{ width: "100%", justifyContent: "center", marginBottom: "0.3rem" }}
               onClick={() => setIsOpen(false)}
             >
-              <Plus size={16} />
+              <Plus size={15} />
               <span>Create Note</span>
             </Link>
 
@@ -322,7 +320,7 @@ const Navigation = ({ onSearch, initialSearch = "" }) => {
               className={`nb-nav-link ${isActive("/") ? "active" : ""}`}
               onClick={() => setIsOpen(false)}
             >
-              <BookOpen size={16} />
+              <FileText size={15} />
               <span>All Notes</span>
             </Link>
 
@@ -331,7 +329,7 @@ const Navigation = ({ onSearch, initialSearch = "" }) => {
               className={`nb-nav-link ${isActive("/get_all_pinned_notes") ? "active" : ""}`}
               onClick={() => setIsOpen(false)}
             >
-              <Pin size={16} />
+              <Pin size={15} />
               <span>Pinned Notes</span>
             </Link>
 
@@ -340,22 +338,22 @@ const Navigation = ({ onSearch, initialSearch = "" }) => {
               className={`nb-nav-link ${isActive("/get_all_archived_notes") ? "active" : ""}`}
               onClick={() => setIsOpen(false)}
             >
-              <Archive size={16} />
+              <Archive size={15} />
               <span>Archived Notes</span>
             </Link>
 
-            <div style={{ padding: "0.6rem 0", borderTop: "1px solid var(--surface-border)" }}>
-              <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase" }}>
+            <div style={{ padding: "0.5rem 0", borderTop: "1px solid var(--surface-border)" }}>
+              <span style={{ fontSize: "0.74rem", fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase" }}>
                 Categories
               </span>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem", marginTop: "0.5rem" }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem", marginTop: "0.4rem" }}>
                 {categories.map((c) => (
                   <Link
                     key={c}
                     to={`/category/${encodeURIComponent(c)}`}
                     className="badge-pill cat-badge-other"
                     onClick={() => setIsOpen(false)}
-                    style={{ fontSize: "0.8rem", padding: "0.3rem 0.6rem" }}
+                    style={{ fontSize: "0.76rem", padding: "0.25rem 0.55rem" }}
                   >
                     {c}
                   </Link>
@@ -364,36 +362,36 @@ const Navigation = ({ onSearch, initialSearch = "" }) => {
                   type="button"
                   className="badge-pill"
                   style={{
-                    fontSize: "0.8rem",
-                    padding: "0.3rem 0.6rem",
+                    fontSize: "0.76rem",
+                    padding: "0.25rem 0.55rem",
                     borderStyle: "dashed",
-                    borderColor: "var(--primary-light)",
-                    color: "var(--primary-light)",
-                    background: "var(--primary-subtle)",
+                    borderColor: "var(--surface-border-strong)",
+                    color: "var(--text-main)",
+                    background: "var(--surface)",
                     cursor: "pointer",
                     display: "inline-flex",
                     alignItems: "center",
-                    gap: "0.25rem",
+                    gap: "0.2rem",
                   }}
                   onClick={() => {
                     setIsOpen(false);
                     openCreateModal();
                   }}
                 >
-                  <Plus size={13} />
+                  <Plus size={12} />
                   <span>New Category</span>
                 </button>
               </div>
             </div>
 
-            <div style={{ paddingTop: "0.6rem", borderTop: "1px solid var(--surface-border)" }}>
+            <div style={{ paddingTop: "0.5rem", borderTop: "1px solid var(--surface-border)" }}>
               {isLoggedIn && user ? (
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                    <div className="nb-avatar-circle" style={{ width: 32, height: 32 }}>
+                    <div className="nb-avatar-circle" style={{ width: 28, height: 28 }}>
                       {initials}
                     </div>
-                    <span style={{ fontWeight: 600, fontSize: "0.9rem" }}>{user.name}</span>
+                    <span style={{ fontWeight: 600, fontSize: "0.85rem" }}>{user.name}</span>
                   </div>
                   <button
                     className="btn-brand-ghost nb-dropdown-danger"
@@ -402,12 +400,12 @@ const Navigation = ({ onSearch, initialSearch = "" }) => {
                       handleLogout();
                     }}
                   >
-                    <LogOut size={16} />
+                    <LogOut size={15} />
                     <span>Sign Out</span>
                   </button>
                 </div>
               ) : (
-                <div style={{ display: "flex", gap: "0.5rem" }}>
+                <div style={{ display: "flex", gap: "0.4rem" }}>
                   <button
                     className="btn-brand-secondary"
                     style={{ flex: 1 }}

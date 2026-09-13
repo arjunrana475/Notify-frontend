@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from "react";
 import API from "../services/api.js";
 import { toast } from "react-toastify";
-import { category as DEFAULT_CATEGORY_NAMES, categoryMeta as DEFAULT_CATEGORY_METAS, getCategoryMeta as baseGetCategoryMeta } from "../constants/category.js";
+import { category as DEFAULT_CATEGORY_NAMES, getCategoryMeta as baseGetCategoryMeta } from "../constants/category.js";
 import { useAuth } from "./AuthContext";
 
 const CategoryContext = createContext(null);
@@ -68,9 +68,9 @@ export const CategoryProvider = ({ children }) => {
       map[c.name] = {
         icon: c.icon || "📁",
         colorClass: "cat-badge-other",
-        bg: c.color ? `${c.color}22` : "rgba(99, 102, 241, 0.12)",
-        color: c.color || "#6366f1",
-        border: c.color ? `${c.color}55` : "rgba(99, 102, 241, 0.3)",
+        bg: c.color ? `${c.color}18` : "rgba(59, 130, 246, 0.12)",
+        color: c.color || "#3b82f6",
+        border: c.color ? `${c.color}44` : "rgba(59, 130, 246, 0.28)",
         desc: c.desc || `${c.name} category`,
         isCustom: true,
         _id: c._id,
@@ -87,7 +87,7 @@ export const CategoryProvider = ({ children }) => {
   );
 
   const addCategory = useCallback(
-    async ({ name, icon = "📁", color = "#6366f1", desc = "" }) => {
+    async ({ name, icon = "📁", color = "#3b82f6", desc = "" }) => {
       if (!name || !name.trim()) {
         toast.error("Category name is required");
         return null;
@@ -135,7 +135,7 @@ export const CategoryProvider = ({ children }) => {
           return next;
         });
 
-        toast.success(`Category "${cleanName}" created! 🎉`);
+        toast.success(`Category "${cleanName}" created`);
 
         if (onCreatedCallback && typeof onCreatedCallback === "function") {
           onCreatedCallback(cleanName, createdCat);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { X, Sparkles, Plus, Check } from "lucide-react";
+import { X, FolderPlus, Plus, Check } from "lucide-react";
 import { useCategory } from "../context/CategoryContext";
 
 const PRESET_ICONS = [
@@ -10,16 +10,16 @@ const PRESET_ICONS = [
 ];
 
 const PRESET_COLORS = [
+  { name: "Blue", hex: "#3b82f6" },
   { name: "Indigo", hex: "#6366f1" },
-  { name: "Purple", hex: "#a855f7" },
-  { name: "Pink", hex: "#ec4899" },
+  { name: "Purple", hex: "#8b5cf6" },
   { name: "Emerald", hex: "#10b981" },
+  { name: "Teal", hex: "#14b8a6" },
   { name: "Cyan", hex: "#06b6d4" },
   { name: "Amber", hex: "#f59e0b" },
   { name: "Orange", hex: "#f97316" },
   { name: "Rose", hex: "#f43f5e" },
-  { name: "Blue", hex: "#3b82f6" },
-  { name: "Teal", hex: "#14b8a6" },
+  { name: "Slate", hex: "#64748b" },
 ];
 
 export default function CreateCategoryModal() {
@@ -27,7 +27,7 @@ export default function CreateCategoryModal() {
 
   const [name, setName] = useState("");
   const [icon, setIcon] = useState("⚡");
-  const [color, setColor] = useState("#6366f1");
+  const [color, setColor] = useState("#3b82f6");
   const [desc, setDesc] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -38,7 +38,7 @@ export default function CreateCategoryModal() {
     if (isModalOpen) {
       setName("");
       setIcon("⚡");
-      setColor("#6366f1");
+      setColor("#3b82f6");
       setDesc("");
       setTimeout(() => inputRef.current?.focus(), 50);
     }
@@ -62,7 +62,7 @@ export default function CreateCategoryModal() {
     if (!name.trim()) return;
 
     setLoading(true);
-    const result = await addCategory({
+    await addCategory({
       name: name.trim(),
       icon,
       color,
@@ -81,10 +81,10 @@ export default function CreateCategoryModal() {
         alignItems: "center",
         justifyContent: "center",
         padding: "1rem",
-        background: "rgba(0, 0, 0, 0.65)",
-        backdropFilter: "blur(8px)",
-        WebkitBackdropFilter: "blur(8px)",
-        animation: "fadeIn 0.2s ease-out",
+        background: "rgba(0, 0, 0, 0.6)",
+        backdropFilter: "blur(4px)",
+        WebkitBackdropFilter: "blur(4px)",
+        animation: "fadeIn 0.15s ease-out",
       }}
       onClick={(e) => {
         if (modalRef.current && !modalRef.current.contains(e.target)) {
@@ -97,11 +97,11 @@ export default function CreateCategoryModal() {
         className="glass-panel"
         style={{
           width: "100%",
-          maxWidth: "500px",
-          padding: "2rem",
+          maxWidth: "480px",
+          padding: "1.75rem",
           position: "relative",
           boxShadow: "var(--shadow-xl)",
-          animation: "slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+          animation: "slideDown 0.15s ease-out",
           maxHeight: "90vh",
           overflowY: "auto",
         }}
@@ -112,28 +112,29 @@ export default function CreateCategoryModal() {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            marginBottom: "1.5rem",
-            paddingBottom: "1rem",
+            marginBottom: "1.25rem",
+            paddingBottom: "0.85rem",
             borderBottom: "1px solid var(--surface-border)",
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
             <div
               style={{
-                width: "36px",
-                height: "36px",
-                borderRadius: "10px",
-                background: "linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)",
+                width: "34px",
+                height: "34px",
+                borderRadius: "var(--radius-md)",
+                background: "var(--primary-subtle)",
+                border: "1px solid var(--primary-border)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                color: "#ffffff",
+                color: "var(--primary)",
               }}
             >
-              <Sparkles size={18} />
+              <FolderPlus size={17} />
             </div>
             <div>
-              <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0 }}>Create Category</h3>
+              <h3 style={{ fontSize: "1.1rem", fontWeight: 700, margin: 0, color: "var(--text-main)" }}>Create Category</h3>
               <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", margin: 0 }}>
                 Organize notes into custom knowledge topics
               </p>
@@ -146,35 +147,35 @@ export default function CreateCategoryModal() {
             onClick={closeCreateModal}
             aria-label="Close modal"
           >
-            <X size={18} />
+            <X size={16} />
           </button>
         </div>
 
         {/* Live Preview Card */}
         <div
           style={{
-            padding: "1rem 1.25rem",
-            borderRadius: "var(--radius-lg)",
-            background: "var(--surface-hover)",
+            padding: "0.85rem 1rem",
+            borderRadius: "var(--radius-md)",
+            background: "var(--surface-subtle)",
             border: "1px solid var(--surface-border)",
-            marginBottom: "1.5rem",
+            marginBottom: "1.25rem",
           }}
         >
-          <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--text-subtle)", textTransform: "uppercase", display: "block", marginBottom: "0.5rem" }}>
-            Live Preview
+          <span style={{ fontSize: "0.7rem", fontWeight: 600, color: "var(--text-subtle)", textTransform: "uppercase", display: "block", marginBottom: "0.4rem" }}>
+            Preview
           </span>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.65rem" }}>
             <div
               style={{
-                width: "44px",
-                height: "44px",
-                borderRadius: "var(--radius-md)",
-                background: `${color}22`,
-                border: `1px solid ${color}55`,
+                width: "38px",
+                height: "38px",
+                borderRadius: "var(--radius-sm)",
+                background: `${color}18`,
+                border: `1px solid ${color}44`,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: "1.5rem",
+                fontSize: "1.3rem",
               }}
             >
               {icon}
@@ -183,22 +184,22 @@ export default function CreateCategoryModal() {
               <div
                 className="badge-pill"
                 style={{
-                  background: `${color}22`,
+                  background: `${color}18`,
                   color: color,
-                  border: `1px solid ${color}55`,
-                  fontWeight: 700,
-                  fontSize: "0.85rem",
-                  padding: "0.3rem 0.75rem",
+                  border: `1px solid ${color}44`,
+                  fontWeight: 600,
+                  fontSize: "0.8rem",
+                  padding: "0.25rem 0.65rem",
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: "0.4rem",
+                  gap: "0.35rem",
                 }}
               >
                 <span>{icon}</span>
                 <span>{name.trim() || "Category Name"}</span>
               </div>
               {desc && (
-                <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", margin: "0.3rem 0 0", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                <p style={{ fontSize: "0.76rem", color: "var(--text-muted)", margin: "0.25rem 0 0", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                   {desc}
                 </p>
               )}
@@ -208,15 +209,15 @@ export default function CreateCategoryModal() {
 
         <form onSubmit={handleSubmit}>
           {/* Category Name */}
-          <div style={{ marginBottom: "1.25rem" }}>
+          <div style={{ marginBottom: "1.1rem" }}>
             <label
               htmlFor="cat-name-input"
               style={{
                 display: "block",
-                fontSize: "0.85rem",
-                fontWeight: 700,
+                fontSize: "0.82rem",
+                fontWeight: 600,
                 color: "var(--text-main)",
-                marginBottom: "0.4rem",
+                marginBottom: "0.35rem",
                 fontFamily: "var(--font-display)",
               }}
             >
@@ -227,7 +228,7 @@ export default function CreateCategoryModal() {
               ref={inputRef}
               type="text"
               className="input-modern"
-              placeholder="e.g. System Design, AI, DevOps, Personal"
+              placeholder="e.g. System Design, DevOps, AI, Personal"
               value={name}
               onChange={(e) => setName(e.target.value)}
               maxLength={40}
@@ -236,17 +237,17 @@ export default function CreateCategoryModal() {
           </div>
 
           {/* Icon / Emoji Picker */}
-          <div style={{ marginBottom: "1.25rem" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.4rem" }}>
+          <div style={{ marginBottom: "1.1rem" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.35rem" }}>
               <label
                 style={{
-                  fontSize: "0.85rem",
-                  fontWeight: 700,
+                  fontSize: "0.82rem",
+                  fontWeight: 600,
                   color: "var(--text-main)",
                   fontFamily: "var(--font-display)",
                 }}
               >
-                Choose Emoji Icon
+                Select Icon
               </label>
               <input
                 type="text"
@@ -254,13 +255,13 @@ export default function CreateCategoryModal() {
                 onChange={(e) => setIcon(e.target.value || "📁")}
                 maxLength={4}
                 style={{
-                  width: "50px",
+                  width: "42px",
                   textAlign: "center",
                   padding: "2px",
-                  borderRadius: "6px",
+                  borderRadius: "4px",
                   border: "1px solid var(--surface-border)",
                   background: "var(--surface)",
-                  fontSize: "1rem",
+                  fontSize: "0.95rem",
                 }}
                 title="Type custom emoji"
               />
@@ -270,13 +271,13 @@ export default function CreateCategoryModal() {
               style={{
                 display: "grid",
                 gridTemplateColumns: "repeat(8, 1fr)",
-                gap: "0.35rem",
-                maxHeight: "110px",
+                gap: "0.3rem",
+                maxHeight: "105px",
                 overflowY: "auto",
                 padding: "4px",
                 borderRadius: "var(--radius-md)",
                 border: "1px solid var(--surface-border)",
-                background: "var(--surface)",
+                background: "var(--surface-subtle)",
               }}
             >
               {PRESET_ICONS.map((emoji) => (
@@ -285,16 +286,16 @@ export default function CreateCategoryModal() {
                   type="button"
                   onClick={() => setIcon(emoji)}
                   style={{
-                    background: icon === emoji ? "var(--primary-subtle)" : "transparent",
-                    border: `1px solid ${icon === emoji ? "var(--primary)" : "transparent"}`,
-                    borderRadius: "6px",
-                    padding: "4px",
-                    fontSize: "1.2rem",
+                    background: icon === emoji ? "var(--surface-hover)" : "transparent",
+                    border: `1px solid ${icon === emoji ? "var(--primary-border)" : "transparent"}`,
+                    borderRadius: "4px",
+                    padding: "3px",
+                    fontSize: "1.1rem",
                     cursor: "pointer",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    transition: "all 0.15s ease",
+                    transition: "all var(--transition-fast)",
                   }}
                 >
                   {emoji}
@@ -304,68 +305,68 @@ export default function CreateCategoryModal() {
           </div>
 
           {/* Color Palette Picker */}
-          <div style={{ marginBottom: "1.25rem" }}>
+          <div style={{ marginBottom: "1.1rem" }}>
             <label
               style={{
                 display: "block",
-                fontSize: "0.85rem",
-                fontWeight: 700,
+                fontSize: "0.82rem",
+                fontWeight: 600,
                 color: "var(--text-main)",
-                marginBottom: "0.4rem",
+                marginBottom: "0.35rem",
                 fontFamily: "var(--font-display)",
               }}
             >
-              Theme Accent Color
+              Accent Color
             </label>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.45rem" }}>
               {PRESET_COLORS.map((c) => (
                 <button
                   key={c.hex}
                   type="button"
                   onClick={() => setColor(c.hex)}
                   style={{
-                    width: "32px",
-                    height: "32px",
+                    width: "28px",
+                    height: "28px",
                     borderRadius: "50%",
                     background: c.hex,
-                    border: `2px solid ${color === c.hex ? "#ffffff" : "transparent"}`,
+                    border: `2px solid ${color === c.hex ? "var(--surface)" : "transparent"}`,
                     boxShadow: color === c.hex ? `0 0 0 2px ${c.hex}` : "none",
                     cursor: "pointer",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     color: "#ffffff",
-                    transition: "transform 0.15s ease",
-                    transform: color === c.hex ? "scale(1.15)" : "scale(1)",
+                    transition: "transform 0.12s ease",
+                    transform: color === c.hex ? "scale(1.1)" : "scale(1)",
                   }}
                   title={c.name}
                 >
-                  {color === c.hex && <Check size={14} strokeWidth={3} />}
+                  {color === c.hex && <Check size={13} strokeWidth={3} />}
                 </button>
               ))}
             </div>
           </div>
 
           {/* Description (Optional) */}
-          <div style={{ marginBottom: "1.75rem" }}>
+          <div style={{ marginBottom: "1.5rem" }}>
             <label
               htmlFor="cat-desc-input"
               style={{
                 display: "block",
-                fontSize: "0.85rem",
-                fontWeight: 700,
+                fontSize: "0.82rem",
+                fontWeight: 600,
                 color: "var(--text-main)",
-                marginBottom: "0.4rem",
+                marginBottom: "0.35rem",
                 fontFamily: "var(--font-display)",
               }}
             >
-              Description <span style={{ color: "var(--text-subtle)", fontWeight: 500 }}>(Optional)</span>
+              Description <span style={{ color: "var(--text-subtle)", fontWeight: 400 }}>(Optional)</span>
             </label>
             <input
               id="cat-desc-input"
               type="text"
               className="input-modern"
-              placeholder="e.g. Distributed architectures, scalability & interview prep"
+              placeholder="e.g. Distributed architectures, scalability & interview notes"
               value={desc}
               onChange={(e) => setDesc(e.target.value)}
               maxLength={120}
@@ -373,7 +374,7 @@ export default function CreateCategoryModal() {
           </div>
 
           {/* Actions */}
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.75rem" }}>
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.6rem" }}>
             <button
               type="button"
               className="btn-brand-secondary"
@@ -387,7 +388,7 @@ export default function CreateCategoryModal() {
               className="btn-brand-primary"
               disabled={loading || !name.trim()}
             >
-              <Plus size={16} />
+              <Plus size={15} />
               <span>{loading ? "Creating..." : "Create Category"}</span>
             </button>
           </div>
