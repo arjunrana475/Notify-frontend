@@ -197,56 +197,74 @@ const Home = () => {
         <section
           className="glass-panel animate-fade-in"
           style={{
-            padding: "1.75rem 2rem",
-            marginBottom: "1.5rem",
+            padding: "2rem 2.25rem",
+            marginBottom: "1.75rem",
             position: "relative",
+            overflow: "hidden",
+            background: "linear-gradient(135deg, var(--surface) 0%, var(--surface-subtle) 100%)",
           }}
         >
-          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "1.25rem" }}>
+          {/* Subtle ambient light orb */}
+          <div
+            style={{
+              position: "absolute",
+              top: "-40px",
+              right: "-40px",
+              width: "180px",
+              height: "180px",
+              borderRadius: "50%",
+              background: "radial-gradient(circle, var(--water-glow) 0%, transparent 70%)",
+              pointerEvents: "none",
+            }}
+          />
+
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "1.5rem", position: "relative", zIndex: 1 }}>
             <div>
               <div
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: "0.35rem",
-                  padding: "0.2rem 0.6rem",
+                  gap: "0.45rem",
+                  padding: "0.25rem 0.75rem",
                   background: "var(--primary-subtle)",
                   border: "1px solid var(--primary-border)",
-                  borderRadius: "var(--radius-xs)",
+                  borderRadius: "var(--radius-pill)",
                   color: "var(--primary)",
-                  fontSize: "0.75rem",
-                  fontWeight: 600,
-                  marginBottom: "0.6rem",
+                  fontSize: "0.78rem",
+                  fontWeight: 700,
+                  marginBottom: "0.75rem",
+                  letterSpacing: "0.02em",
                 }}
               >
-                <span>{currentUser ? "Personal Workspace" : "Notes Workspace"}</span>
+                <span style={{ fontSize: "0.9rem" }}>💧</span>
+                <span>{currentUser ? "Personal Knowledge Stream" : "Knowledge Workspace"}</span>
               </div>
 
-              <h1 style={{ fontSize: "1.75rem", fontWeight: 700, color: "var(--text-main)", marginBottom: "0.3rem" }}>
+              <h1 style={{ fontSize: "2rem", fontWeight: 800, color: "var(--text-main)", marginBottom: "0.4rem", letterSpacing: "-0.03em" }}>
                 {currentUser
                   ? `${getGreeting()}, ${(currentUser?.name || "there").split(" ")[0]}`
                   : "Welcome to Notify"}
               </h1>
 
-              <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", margin: 0, maxWidth: "520px" }}>
+              <p style={{ color: "var(--text-muted)", fontSize: "0.94rem", margin: 0, maxWidth: "560px", lineHeight: 1.6 }}>
                 {currentUser
-                  ? "Organize thoughts, pin key resources, and capture knowledge seamlessly."
-                  : "Capture ideas, organize thoughts, and build your personal knowledge base."}
+                  ? "Organize your thoughts, pin key resources, and navigate your personal knowledge base seamlessly."
+                  : "Capture ideas, organize thoughts, and build your modern personal knowledge base."}
               </p>
             </div>
 
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.6rem" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.65rem" }}>
               {currentUser ? (
-                <Link to="/createNote" className="btn-brand-primary" style={{ padding: "0.55rem 1.15rem" }}>
-                  <Plus size={16} />
+                <Link to="/createNote" className="btn-brand-primary" style={{ padding: "0.6rem 1.25rem", fontSize: "0.9rem" }}>
+                  <Plus size={17} />
                   <span>Create Note</span>
                 </Link>
               ) : (
                 <>
-                  <Link to="/login" className="btn-brand-secondary" style={{ padding: "0.55rem 1.15rem" }}>
+                  <Link to="/login" className="btn-brand-secondary" style={{ padding: "0.6rem 1.25rem" }}>
                     <span>Sign In</span>
                   </Link>
-                  <Link to="/register" className="btn-brand-primary" style={{ padding: "0.55rem 1.15rem" }}>
+                  <Link to="/register" className="btn-brand-primary" style={{ padding: "0.6rem 1.25rem" }}>
                     <span>Get Started</span>
                   </Link>
                 </>

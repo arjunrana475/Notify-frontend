@@ -85,10 +85,10 @@ export default function Register() {
           type="button"
           className="nb-theme-btn"
           onClick={toggleTheme}
-          title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+          title={isDark ? "Switch to Water Light-Indigo Theme" : "Switch to Obsidian Black Theme"}
           aria-label="Toggle theme"
         >
-          {isDark ? <Sun size={16} /> : <Moon size={16} />}
+          {isDark ? <Sun size={17} color="var(--accent-amber)" /> : <Moon size={17} color="var(--primary)" />}
         </button>
       </div>
 
@@ -96,34 +96,34 @@ export default function Register() {
         className="glass-panel animate-fade-in"
         style={{
           width: "100%",
-          maxWidth: "420px",
-          padding: "2rem",
+          maxWidth: "440px",
+          padding: "2.25rem",
           position: "relative",
           zIndex: 2,
         }}
       >
         {/* Brand Header */}
-        <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+        <div style={{ textAlign: "center", marginBottom: "1.75rem" }}>
           <div
             style={{
-              width: "42px",
-              height: "42px",
+              width: "46px",
+              height: "46px",
               borderRadius: "var(--radius-md)",
-              background: "var(--primary)",
+              background: "linear-gradient(135deg, var(--primary) 0%, var(--water-cyan) 100%)",
               color: "white",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              margin: "0 auto 0.85rem",
-              boxShadow: "var(--shadow-xs)",
+              margin: "0 auto 0.95rem",
+              boxShadow: "0 4px 14px rgba(79, 70, 229, 0.35)",
             }}
           >
-            <FileText size={20} />
+            <FileText size={22} />
           </div>
-          <h1 style={{ fontSize: "1.45rem", fontWeight: 700, color: "var(--text-main)", marginBottom: "0.25rem" }}>
+          <h1 style={{ fontSize: "1.6rem", fontWeight: 800, color: "var(--text-main)", marginBottom: "0.25rem", letterSpacing: "-0.02em" }}>
             Create an Account
           </h1>
-          <p style={{ color: "var(--text-muted)", fontSize: "0.85rem" }}>
+          <p style={{ color: "var(--text-muted)", fontSize: "0.88rem" }}>
             Start capturing, categorizing, and organizing notes
           </p>
         </div>

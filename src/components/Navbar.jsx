@@ -204,10 +204,10 @@ const Navigation = ({ onSearch, initialSearch = "" }) => {
             type="button"
             className="nb-theme-btn"
             onClick={toggleTheme}
-            title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            title={isDark ? "Switch to Water Light-Indigo Theme" : "Switch to Obsidian Black Theme"}
             aria-label="Toggle theme"
           >
-            {isDark ? <Sun size={16} /> : <Moon size={16} />}
+            {isDark ? <Sun size={17} color="var(--accent-amber)" /> : <Moon size={17} color="var(--primary)" />}
           </button>
 
           {/* New Note CTA */}
@@ -282,9 +282,9 @@ const Navigation = ({ onSearch, initialSearch = "" }) => {
             className="nb-theme-btn"
             style={{ display: "flex" }}
             onClick={toggleTheme}
-            title="Toggle theme"
+            title={isDark ? "Switch to Water Light-Indigo Theme" : "Switch to Obsidian Black Theme"}
           >
-            {isDark ? <Sun size={16} /> : <Moon size={16} />}
+            {isDark ? <Sun size={17} color="var(--accent-amber)" /> : <Moon size={17} color="var(--primary)" />}
           </button>
 
           <button

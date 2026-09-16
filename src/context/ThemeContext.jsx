@@ -5,9 +5,9 @@ const ThemeContext = createContext();
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(() => {
     try {
-      return localStorage.getItem("notify_theme") || "dark";
+      return localStorage.getItem("notify_theme") || "light";
     } catch {
-      return "dark";
+      return "light";
     }
   });
 
@@ -32,3 +32,4 @@ export const ThemeProvider = ({ children }) => {
 };
 
 export const useTheme = () => useContext(ThemeContext);
+
