@@ -28,6 +28,9 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/createNote" element={<CreateNote />} />
+          <Route path="/create-note" element={<CreateNote />} />
+          <Route path="/createnote" element={<CreateNote />} />
+          <Route path="/create" element={<CreateNote />} />
           <Route path="/note/:id" element={<NoteDetails />} />
           <Route path="/edit-note/:id" element={<EditNote />} />
           <Route path="/get_all_pinned_notes" element={<Pinned />} />

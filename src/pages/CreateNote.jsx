@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import API from "../services/api.js";
 import { toast } from "react-toastify";
 import Navigation from "../components/Navbar";
+import Loader from "../components/Loader";
 import { useCategory } from "../context/CategoryContext";
 import { useAuth } from "../context/AuthContext";
 import {
@@ -48,7 +49,7 @@ export default function CreateNote() {
   // Tag chip handlers
   const handleAddTag = (tagToAdd) => {
     const clean = tagToAdd.trim().replace(/^#/, "");
-    if (clean && !tags.includes(clean)) {
+    if (clean && !tags.some((t) => t.toLowerCase() === clean.toLowerCase())) {
       setTags([...tags, clean]);
     }
     setTagInput("");
@@ -82,22 +83,26 @@ export default function CreateNote() {
       return toast.error("Please add note content");
     }
 
-    // Include any trailing text in tagInput as a tag
-    let finalTags = [...tags];
-    if (tagInput.trim() && !finalTags.includes(tagInput.trim())) {
-      finalTags.push(tagInput.trim());
+    // Include any trailing text in tagInput as a tag, sanitized
+    let finalTags = tags
+      .map((t) => (typeof t === "string" ? t.trim().replace(/^#/, "") : ""))
+      .filter(Boolean);
+
+    const cleanInput = tagInput.trim().replace(/^#/, "");
+    if (cleanInput && !finalTags.some((t) => t.toLowerCase() === cleanInput.toLowerCase())) {
+      finalTags.push(cleanInput);
     }
 
     try {
       setLoading(true);
       const notePayload = {
-        title,
-        content,
-        category: selectedCategory,
+        title: title.trim(),
+        content: content.trim(),
+        category: selectedCategory || "General",
         topics: finalTags,
-        link,
-        isPinned,
-        isArchived,
+        link: link.trim(),
+        isPinned: Boolean(isPinned),
+        isArchived: Boolean(isArchived),
       };
 
       const response = await API.post("/api/notes", notePayload);
@@ -116,6 +121,15 @@ export default function CreateNote() {
   };
 
   const catMeta = getMeta(selectedCategory);
+
+  if (authLoading) {
+    return (
+      <>
+        <Navigation />
+        <Loader message="Loading editor..." />
+      </>
+    );
+  }
 
   return (
     <>
