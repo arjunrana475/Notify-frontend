@@ -51,7 +51,7 @@ export default function Archive() {
     <>
       <Navigation />
 
-      <main className="container-fluid" style={{ maxWidth: "1240px", padding: "1.25rem 1.25rem 3.5rem" }}>
+      <main className="dashboard-layout">
         {/* Archive Header */}
         <section
           className="glass-panel animate-fade-in"

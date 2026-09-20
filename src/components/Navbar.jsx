@@ -7,6 +7,7 @@ import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
 import { useCategory } from "../context/CategoryContext";
 import {
+  LayoutGrid,
   FileText,
   Pin,
   Archive,
@@ -18,16 +19,19 @@ import {
   Layers,
   Sun,
   Moon,
+  Tag,
+  User,
+  Sparkles,
 } from "lucide-react";
 
-const Navigation = ({ onSearch, initialSearch = "" }) => {
+export default function Navigation({ onSearch, initialSearch = "" }) {
   const { user, isLoggedIn, logout } = useAuth();
   const { categories, getMeta, openCreateModal } = useCategory();
   const navigate = useNavigate();
   const location = useLocation();
   const { toggleTheme, isDark } = useTheme();
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [categoryOpen, setCategoryOpen] = useState(false);
 
@@ -41,7 +45,7 @@ const Navigation = ({ onSearch, initialSearch = "" }) => {
         .slice(0, 2)
         .join("")
         .toUpperCase()
-    : "?";
+    : "U";
 
   const handleLogout = async () => {
     const result = await Swal.fire({
@@ -60,14 +64,12 @@ const Navigation = ({ onSearch, initialSearch = "" }) => {
 
     try {
       await logout();
-
       await Swal.fire({
         icon: "success",
         title: "Signed Out",
         timer: 1200,
         showConfirmButton: false,
       });
-
       navigate("/login");
     } catch {
       Swal.fire({
@@ -78,7 +80,7 @@ const Navigation = ({ onSearch, initialSearch = "" }) => {
     }
   };
 
-  // Close menus on outside click
+  // Close popups on click outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -95,155 +97,152 @@ const Navigation = ({ onSearch, initialSearch = "" }) => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <header className="navbar-notify-wrapper">
-      <div className="navbar-notify-glass">
-        {/* Brand Logo */}
-        <Link to="/" className="nb-brand" onClick={() => setIsOpen(false)}>
-          <div className="nb-logo-icon-box">
-            <FileText size={18} />
-          </div>
-          <div className="nb-brand-text">
-            <span className="nb-wordmark">Notify</span>
-            <span className="nb-tagline">Knowledge Hub</span>
+    <>
+      {/* =========================================================================
+          1. Desktop Floating Left Dock Navigation Rail (as seen in image)
+          ========================================================================= */}
+      <aside className="dock-nav-rail d-none d-md-flex" aria-label="Main Navigation">
+        {/* Brand Logo Wing Badge */}
+        <Link to="/" className="dock-brand-badge" title="Notify Home">
+          <div className="dock-logo-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 3c-4.5 0-8 3.5-8 8 0 4 3 6.5 7 9.5.5.4 1.5.4 2 0 4-3 7-5.5 7-9.5 0-4.5-3.5-8-8-8z" />
+              <path d="M12 7v6" />
+              <path d="M9 10l3 3 3-3" />
+            </svg>
           </div>
         </Link>
 
-        {/* Global Search Bar Center */}
-        <div className="nb-search-center">
-          <SearchBar onSearch={onSearch} initialValue={initialSearch} />
-        </div>
+        {/* Middle Navigation Action Icons Stack */}
+        <div className="dock-nav-stack">
+          {/* Dashboard / All Notes */}
+          <Link
+            to="/"
+            className={`dock-nav-item ${isActive("/") ? "active" : ""}`}
+            data-tooltip="All Notes"
+            aria-label="All Notes"
+          >
+            <LayoutGrid size={20} />
+          </Link>
 
-        {/* Desktop Nav Items */}
-        <div className="nb-nav-actions nb-desktop-nav">
-          {/* Category Dropdown */}
-          <div className="nb-cat-dropdown-container" ref={catRef}>
+          {/* Create Note */}
+          <Link
+            to="/createNote"
+            className={`dock-nav-item ${isActive("/createNote") || isActive("/create-note") ? "active" : ""}`}
+            data-tooltip="Create Note"
+            aria-label="Create Note"
+          >
+            <Plus size={21} />
+          </Link>
+
+          {/* Pinned Notes */}
+          <Link
+            to="/get_all_pinned_notes"
+            className={`dock-nav-item ${isActive("/get_all_pinned_notes") ? "active" : ""}`}
+            data-tooltip="Pinned Notes"
+            aria-label="Pinned Notes"
+          >
+            <Pin size={20} />
+          </Link>
+
+          {/* Archived Notes */}
+          <Link
+            to="/get_all_archived_notes"
+            className={`dock-nav-item ${isActive("/get_all_archived_notes") ? "active" : ""}`}
+            data-tooltip="Archived Notes"
+            aria-label="Archived Notes"
+          >
+            <Archive size={20} />
+          </Link>
+
+          {/* Categories Popover Trigger */}
+          <div className="dock-item-wrapper" ref={catRef}>
             <button
-              className="nb-cat-trigger"
               type="button"
-              onClick={() => setCategoryOpen((prev) => !prev)}
-              aria-expanded={categoryOpen}
+              className={`dock-nav-item ${categoryOpen ? "active" : ""}`}
+              onClick={() => setCategoryOpen((v) => !v)}
+              data-tooltip="Categories"
+              aria-label="Categories"
             >
-              <Layers size={15} color="var(--text-muted)" />
-              <span>Categories</span>
-              <ChevronDown
-                size={13}
-                style={{
-                  transform: categoryOpen ? "rotate(180deg)" : "rotate(0deg)",
-                  transition: "transform 0.15s ease",
-                }}
-              />
+              <Layers size={20} />
             </button>
 
             {categoryOpen && (
-              <div className="nb-cat-menu-card">
-                {categories.map((catName) => {
-                  const meta = getMeta(catName);
-                  return (
-                    <Link
-                      key={catName}
-                      className="nb-cat-menu-item"
-                      to={`/category/${encodeURIComponent(catName)}`}
-                      onClick={() => setCategoryOpen(false)}
-                    >
-                      <div className="nb-cat-item-left">
-                        <span className="nb-cat-emoji">{meta.icon}</span>
-                        <span>{catName}</span>
-                      </div>
-                    </Link>
-                  );
-                })}
-
-                <button
-                  type="button"
-                  className="nb-cat-menu-item"
-                  style={{
-                    color: "var(--primary)",
-                    fontWeight: 600,
-                    borderTop: "1px solid var(--surface-border)",
-                    marginTop: "0.2rem",
-                    paddingTop: "0.5rem",
-                    background: "none",
-                    border: "none",
-                    width: "100%",
-                    cursor: "pointer",
-                    textAlign: "left",
-                  }}
-                  onClick={() => {
-                    setCategoryOpen(false);
-                    openCreateModal();
-                  }}
-                >
-                  <div className="nb-cat-item-left">
-                    <Plus size={14} color="var(--primary)" />
-                    <span>New Category</span>
-                  </div>
-                </button>
+              <div className="dock-flyout-menu animate-fade-in">
+                <div className="dock-flyout-header">
+                  <span>Categories</span>
+                  <button
+                    type="button"
+                    className="dock-flyout-add-btn"
+                    onClick={() => {
+                      setCategoryOpen(false);
+                      openCreateModal();
+                    }}
+                    title="Add category"
+                  >
+                    <Plus size={14} />
+                  </button>
+                </div>
+                <div className="dock-flyout-list">
+                  {categories.map((catName) => {
+                    const meta = getMeta(catName);
+                    return (
+                      <Link
+                        key={catName}
+                        to={`/category/${encodeURIComponent(catName)}`}
+                        className="dock-flyout-item"
+                        onClick={() => setCategoryOpen(false)}
+                      >
+                        <span className="dock-flyout-emoji">{meta.icon}</span>
+                        <span className="dock-flyout-label">{catName}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
               </div>
             )}
           </div>
 
-          {/* Nav Links */}
-          <Link
-            to="/get_all_pinned_notes"
-            className={`nb-nav-link ${isActive("/get_all_pinned_notes") ? "active" : ""}`}
-          >
-            <Pin size={14} />
-            <span>Pinned</span>
-          </Link>
-
-          <Link
-            to="/get_all_archived_notes"
-            className={`nb-nav-link ${isActive("/get_all_archived_notes") ? "active" : ""}`}
-          >
-            <Archive size={14} />
-            <span>Archive</span>
-          </Link>
-
-          {/* Theme Toggle Button */}
+          {/* Theme Switcher Toggle */}
           <button
             type="button"
-            className="nb-theme-btn"
+            className="dock-nav-item dock-theme-btn"
             onClick={toggleTheme}
-            title={isDark ? "Switch to Water Light-Indigo Theme" : "Switch to Obsidian Black Theme"}
-            aria-label="Toggle theme"
+            data-tooltip={isDark ? "Light Mode" : "Dark Mode"}
+            aria-label="Toggle Theme"
           >
-            {isDark ? <Sun size={17} color="var(--accent-amber)" /> : <Moon size={17} color="var(--primary)" />}
+            {isDark ? <Sun size={20} color="var(--accent-amber)" /> : <Moon size={20} color="var(--accent-sky)" />}
           </button>
+        </div>
 
-          {/* New Note CTA */}
-          <Link to="/createNote" className="btn-brand-primary" style={{ padding: "0.45rem 0.9rem", fontSize: "0.85rem" }}>
-            <Plus size={15} />
-            <span>New Note</span>
-          </Link>
-
-          {/* User Profile / Auth */}
+        {/* Bottom User Avatar / Profile Menu */}
+        <div className="dock-bottom-stack" ref={menuRef}>
           {isLoggedIn && user ? (
-            <div className="nb-user-container" ref={menuRef}>
+            <div className="dock-user-wrapper">
               <button
-                className="nb-avatar-button"
+                type="button"
+                className="dock-avatar-btn"
                 onClick={() => setUserMenuOpen((v) => !v)}
-                aria-haspopup="true"
-                aria-expanded={userMenuOpen}
+                data-tooltip={user.name}
+                aria-label="User Profile Menu"
               >
-                <div className="nb-avatar-circle">{initials}</div>
-                <span className="nb-user-name">{user.name.split(" ")[0]}</span>
-                <ChevronDown size={12} color="var(--text-muted)" />
+                <div className="dock-avatar-circle">{initials}</div>
+                <span className="dock-avatar-online-dot"></span>
               </button>
 
               {userMenuOpen && (
-                <div className="nb-user-dropdown">
-                  <div className="nb-user-dropdown-header">
-                    <div className="nb-avatar-circle" style={{ width: 32, height: 32 }}>
-                      {initials}
-                    </div>
-                    <div className="nb-user-dropdown-info">
-                      <span className="nb-dropdown-title">{user.name}</span>
-                      <span className="nb-dropdown-sub">{user.email || "Active User"}</span>
+                <div className="dock-user-flyout animate-fade-in">
+                  <div className="dock-user-flyout-header">
+                    <div className="dock-avatar-circle" style={{ width: 34, height: 34 }}>{initials}</div>
+                    <div className="dock-user-info">
+                      <div className="dock-user-name">{user.name}</div>
+                      <div className="dock-user-email">{user.email || "Active Member"}</div>
                     </div>
                   </div>
-
+                  <div className="dock-flyout-divider"></div>
                   <button
-                    className="nb-dropdown-item nb-dropdown-danger"
+                    type="button"
+                    className="dock-flyout-action-btn danger"
                     onClick={() => {
                       setUserMenuOpen(false);
                       handleLogout();
@@ -256,184 +255,144 @@ const Navigation = ({ onSearch, initialSearch = "" }) => {
               )}
             </div>
           ) : (
-            <div style={{ display: "flex", gap: "0.4rem" }}>
-              <button
-                className="btn-brand-secondary"
-                style={{ padding: "0.4rem 0.85rem", fontSize: "0.82rem" }}
-                onClick={() => navigate("/login")}
-              >
-                Sign In
-              </button>
-              <button
-                className="btn-brand-primary"
-                style={{ padding: "0.4rem 0.85rem", fontSize: "0.82rem" }}
-                onClick={() => navigate("/register")}
-              >
-                Sign Up
-              </button>
-            </div>
+            <button
+              type="button"
+              className="dock-nav-item"
+              onClick={() => navigate("/login")}
+              data-tooltip="Sign In"
+              aria-label="Sign In"
+            >
+              <User size={20} />
+            </button>
           )}
         </div>
+      </aside>
 
-        {/* Mobile Actions (Theme + Menu) */}
-        <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+      {/* =========================================================================
+          2. Mobile Responsive Top Navigation Bar (< 768px)
+          ========================================================================= */}
+      <header className="mobile-top-bar d-md-none">
+        <Link to="/" className="mobile-brand-link">
+          <div className="dock-logo-icon" style={{ width: 34, height: 34 }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 3c-4.5 0-8 3.5-8 8 0 4 3 6.5 7 9.5.5.4 1.5.4 2 0 4-3 7-5.5 7-9.5 0-4.5-3.5-8-8-8z" />
+              <path d="M12 7v6" />
+              <path d="M9 10l3 3 3-3" />
+            </svg>
+          </div>
+          <span className="mobile-brand-title">Notify</span>
+        </Link>
+
+        <div className="mobile-actions-right">
           <button
             type="button"
-            className="nb-theme-btn"
-            style={{ display: "flex" }}
+            className="mobile-icon-btn"
             onClick={toggleTheme}
-            title={isDark ? "Switch to Water Light-Indigo Theme" : "Switch to Obsidian Black Theme"}
+            aria-label="Toggle Theme"
           >
-            {isDark ? <Sun size={17} color="var(--accent-amber)" /> : <Moon size={17} color="var(--primary)" />}
+            {isDark ? <Sun size={18} color="var(--accent-amber)" /> : <Moon size={18} color="var(--primary-bright)" />}
           </button>
+
+          <Link to="/createNote" className="mobile-new-btn">
+            <Plus size={16} />
+          </Link>
 
           <button
-            className="nb-mobile-toggle"
-            onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle navigation menu"
+            type="button"
+            className="mobile-menu-btn"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label="Open Navigation Menu"
           >
-            {isOpen ? <X size={18} /> : <Menu size={18} />}
+            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
-      </div>
 
-      {/* Mobile Drawer */}
-      {isOpen && (
-        <div className="glass-panel nb-mobile-drawer open">
-          <div style={{ marginBottom: "0.5rem" }}>
-            <SearchBar onSearch={onSearch} initialValue={initialSearch} />
-          </div>
+        {/* Mobile Drawer */}
+        {mobileOpen && (
+          <div className="mobile-drawer-overlay animate-fade-in">
+            <div className="mobile-drawer-content">
+              <div className="mobile-drawer-search">
+                <SearchBar onSearch={onSearch} initialValue={initialSearch} />
+              </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
-            <Link
-              to="/createNote"
-              className="btn-brand-primary"
-              style={{ width: "100%", justifyContent: "center", marginBottom: "0.3rem" }}
-              onClick={() => setIsOpen(false)}
-            >
-              <Plus size={15} />
-              <span>Create Note</span>
-            </Link>
+              <div className="mobile-nav-list">
+                <Link to="/" className={`mobile-nav-item ${isActive("/") ? "active" : ""}`} onClick={() => setMobileOpen(false)}>
+                  <LayoutGrid size={18} />
+                  <span>All Notes</span>
+                </Link>
+                <Link to="/createNote" className={`mobile-nav-item ${isActive("/createNote") ? "active" : ""}`} onClick={() => setMobileOpen(false)}>
+                  <Plus size={18} />
+                  <span>Create Note</span>
+                </Link>
+                <Link to="/get_all_pinned_notes" className={`mobile-nav-item ${isActive("/get_all_pinned_notes") ? "active" : ""}`} onClick={() => setMobileOpen(false)}>
+                  <Pin size={18} />
+                  <span>Pinned Notes</span>
+                </Link>
+                <Link to="/get_all_archived_notes" className={`mobile-nav-item ${isActive("/get_all_archived_notes") ? "active" : ""}`} onClick={() => setMobileOpen(false)}>
+                  <Archive size={18} />
+                  <span>Archived Notes</span>
+                </Link>
 
-            <Link
-              to="/"
-              className={`nb-nav-link ${isActive("/") ? "active" : ""}`}
-              onClick={() => setIsOpen(false)}
-            >
-              <FileText size={15} />
-              <span>All Notes</span>
-            </Link>
-
-            <Link
-              to="/get_all_pinned_notes"
-              className={`nb-nav-link ${isActive("/get_all_pinned_notes") ? "active" : ""}`}
-              onClick={() => setIsOpen(false)}
-            >
-              <Pin size={15} />
-              <span>Pinned Notes</span>
-            </Link>
-
-            <Link
-              to="/get_all_archived_notes"
-              className={`nb-nav-link ${isActive("/get_all_archived_notes") ? "active" : ""}`}
-              onClick={() => setIsOpen(false)}
-            >
-              <Archive size={15} />
-              <span>Archived Notes</span>
-            </Link>
-
-            <div style={{ padding: "0.5rem 0", borderTop: "1px solid var(--surface-border)" }}>
-              <span style={{ fontSize: "0.74rem", fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase" }}>
-                Categories
-              </span>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem", marginTop: "0.4rem" }}>
-                {categories.map((c) => (
-                  <Link
-                    key={c}
-                    to={`/category/${encodeURIComponent(c)}`}
-                    className="badge-pill cat-badge-other"
-                    onClick={() => setIsOpen(false)}
-                    style={{ fontSize: "0.76rem", padding: "0.25rem 0.55rem" }}
+                <div className="mobile-category-header">
+                  <span>Categories</span>
+                  <button
+                    type="button"
+                    className="mobile-cat-add"
+                    onClick={() => {
+                      setMobileOpen(false);
+                      openCreateModal();
+                    }}
                   >
-                    {c}
-                  </Link>
-                ))}
-                <button
-                  type="button"
-                  className="badge-pill"
-                  style={{
-                    fontSize: "0.76rem",
-                    padding: "0.25rem 0.55rem",
-                    borderStyle: "dashed",
-                    borderColor: "var(--surface-border-strong)",
-                    color: "var(--text-main)",
-                    background: "var(--surface)",
-                    cursor: "pointer",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "0.2rem",
-                  }}
-                  onClick={() => {
-                    setIsOpen(false);
-                    openCreateModal();
-                  }}
-                >
-                  <Plus size={12} />
-                  <span>New Category</span>
-                </button>
+                    <Plus size={13} />
+                  </button>
+                </div>
+                <div className="mobile-category-tags">
+                  {categories.map((c) => (
+                    <Link
+                      key={c}
+                      to={`/category/${encodeURIComponent(c)}`}
+                      className="badge-pill cat-badge-other"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      {c}
+                    </Link>
+                  ))}
+                </div>
+
+                <div className="mobile-drawer-bottom">
+                  {isLoggedIn && user ? (
+                    <div className="mobile-user-row">
+                      <div className="dock-avatar-circle" style={{ width: 32, height: 32 }}>{initials}</div>
+                      <span className="mobile-user-name">{user.name}</span>
+                      <button
+                        type="button"
+                        className="mobile-logout-btn"
+                        onClick={() => {
+                          setMobileOpen(false);
+                          handleLogout();
+                        }}
+                      >
+                        <LogOut size={16} />
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      className="btn-brand-primary w-100"
+                      onClick={() => {
+                        setMobileOpen(false);
+                        navigate("/login");
+                      }}
+                    >
+                      Sign In
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
-
-            <div style={{ paddingTop: "0.5rem", borderTop: "1px solid var(--surface-border)" }}>
-              {isLoggedIn && user ? (
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                    <div className="nb-avatar-circle" style={{ width: 28, height: 28 }}>
-                      {initials}
-                    </div>
-                    <span style={{ fontWeight: 600, fontSize: "0.85rem" }}>{user.name}</span>
-                  </div>
-                  <button
-                    className="btn-brand-ghost nb-dropdown-danger"
-                    onClick={() => {
-                      setIsOpen(false);
-                      handleLogout();
-                    }}
-                  >
-                    <LogOut size={15} />
-                    <span>Sign Out</span>
-                  </button>
-                </div>
-              ) : (
-                <div style={{ display: "flex", gap: "0.4rem" }}>
-                  <button
-                    className="btn-brand-secondary"
-                    style={{ flex: 1 }}
-                    onClick={() => {
-                      setIsOpen(false);
-                      navigate("/login");
-                    }}
-                  >
-                    Sign In
-                  </button>
-                  <button
-                    className="btn-brand-primary"
-                    style={{ flex: 1 }}
-                    onClick={() => {
-                      setIsOpen(false);
-                      navigate("/register");
-                    }}
-                  >
-                    Sign Up
-                  </button>
-                </div>
-              )}
-            </div>
           </div>
-        </div>
-      )}
-    </header>
+        )}
+      </header>
+    </>
   );
-};
-
-export default Navigation;
+}

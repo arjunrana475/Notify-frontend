@@ -1,85 +1,88 @@
 /* ==========================================================================
-   Notify — Modern Developer Design System & Global Theme Engine
-   Theme 1: Water Light Indigo (Default / 1st Theme)
-   Theme 2: Obsidian Deep Black (Night Mode / 2nd Theme)
+   Notify — Modern Knowledge Hub Design System
+   Theme 1: Soft Cyan & Pure White (Wellness Dashboard Default)
+   Theme 2: Oceanic Obsidian Deep Black (Dark Mode)
    ========================================================================== */
 
-/* --------------------------------------------------------------------------
-   1. Theme 1: Water Light Indigo Tokens (Default)
-   -------------------------------------------------------------------------- */
 :root,
 [data-theme="light"] {
   --theme-mode: "light";
 
   /* Typography */
-  --font-display: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Outfit", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-body: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", monospace;
 
-  /* Brand Colors - Water & Indigo */
-  --primary: #4f46e5;
-  --primary-hover: #4338ca;
-  --primary-light: #6366f1;
-  --primary-bright: #818cf8;
-  --primary-subtle: rgba(79, 70, 229, 0.09);
-  --primary-border: rgba(79, 70, 229, 0.22);
-  --primary-glow: rgba(79, 70, 229, 0.18);
+  /* Brand Colors - Deep Teal & Cyan Accents */
+  --primary: #123e4a;
+  --primary-hover: #0d2f38;
+  --primary-light: #1b5363;
+  --primary-bright: #0ea5e9;
+  --primary-subtle: rgba(18, 62, 74, 0.08);
+  --primary-border: rgba(18, 62, 74, 0.16);
+  --primary-glow: rgba(14, 165, 233, 0.18);
 
-  /* Water & Aqua Palette */
-  --water-cyan: #06b6d4;
-  --water-teal: #0ea5e9;
-  --water-sky: #38bdf8;
-  --water-glow: rgba(6, 182, 212, 0.16);
-  --water-tint: rgba(14, 165, 233, 0.08);
+  /* Water & Cyan Accents */
+  --accent-teal: #14b8a6;
+  --accent-cyan: #06b6d4;
+  --accent-sky: #0ea5e9;
+  --accent-emerald: #10b981;
+  --accent-amber: #f59e0b;
+  --accent-rose: #f43f5e;
+  --accent-indigo: #6366f1;
+  --accent-purple: #8b5cf6;
 
-  /* Semantic Accents */
-  --secondary: #475569;
-  --accent-cyan: #0891b2;
-  --accent-emerald: #059669;
-  --accent-amber: #d97706;
-  --accent-rose: #e11d48;
-  --accent-indigo: #4f46e5;
-  --accent-purple: #7c3aed;
+  /* Hero Gradient */
+  --hero-bg: linear-gradient(135deg, #134551 0%, #1A5463 60%, #153C47 100%);
+  --hero-text: #ffffff;
+  --hero-pill-bg: rgba(255, 255, 255, 0.18);
+  --hero-pill-hover: rgba(255, 255, 255, 0.28);
 
-  /* Surfaces & Ambient Canvas */
-  --bg-app: #f4f8fe;
-  --bg-mesh: radial-gradient(ellipse at 12% 0%, rgba(99, 102, 241, 0.13) 0%, transparent 55%),
-             radial-gradient(ellipse at 88% 8%, rgba(6, 182, 212, 0.15) 0%, transparent 55%),
-             radial-gradient(ellipse at 50% 100%, rgba(14, 165, 233, 0.1) 0%, transparent 60%),
-             #f4f8fe;
+  /* Canvas & Backgrounds - Soft Powder Cyan/Blue as in image */
+  --bg-app: #DCEEFA;
+  --bg-canvas: #DCEEFA;
+  --bg-mesh: radial-gradient(ellipse at 15% 10%, rgba(14, 165, 233, 0.15) 0%, transparent 60%),
+             radial-gradient(ellipse at 85% 85%, rgba(20, 184, 166, 0.12) 0%, transparent 60%),
+             #DCEEFA;
 
-  --surface: rgba(255, 255, 255, 0.88);
+  /* Pure Crisp White Surfaces */
+  --surface: #ffffff;
   --surface-solid: #ffffff;
-  --surface-subtle: rgba(240, 246, 255, 0.65);
-  --surface-translucent: rgba(255, 255, 255, 0.78);
-  --surface-glass: rgba(255, 255, 255, 0.86);
-  --surface-hover: rgba(238, 244, 255, 0.95);
-  --surface-active: rgba(224, 236, 255, 0.95);
-  --surface-border: rgba(99, 102, 241, 0.15);
-  --surface-border-strong: rgba(99, 102, 241, 0.3);
-  --surface-border-water: rgba(6, 182, 212, 0.28);
+  --surface-card: #ffffff;
+  --surface-subtle: #EDF6FC;
+  --surface-pill: #E2F1FA;
+  --surface-pill-hover: #D5EAF7;
+  --surface-translucent: rgba(255, 255, 255, 0.94);
+  --surface-glass: rgba(255, 255, 255, 0.88);
+  --surface-hover: #F6FBFE;
+  --surface-active: #EDF6FC;
+  --surface-border: rgba(18, 62, 74, 0.08);
+  --surface-border-strong: rgba(18, 62, 74, 0.15);
+  --surface-border-cyan: rgba(14, 165, 233, 0.24);
 
   /* Text Spectrum */
-  --text-main: #0b132b;
-  --text-muted: #334155;
-  --text-subtle: #64748b;
+  --text-main: #0F1E2E;
+  --text-heading: #0B1724;
+  --text-muted: #526477;
+  --text-subtle: #7A8E9F;
   --text-inverse: #ffffff;
 
-  /* Water & Crystal Shadows */
-  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
-  --shadow-sm: 0 2px 6px -1px rgba(79, 70, 229, 0.07), 0 1px 3px rgba(6, 182, 212, 0.04);
-  --shadow-md: 0 6px 16px -2px rgba(79, 70, 229, 0.09), 0 2px 6px -1px rgba(6, 182, 212, 0.05);
-  --shadow-lg: 0 12px 28px -4px rgba(79, 70, 229, 0.12), 0 4px 10px -2px rgba(6, 182, 212, 0.06);
-  --shadow-xl: 0 22px 38px -6px rgba(79, 70, 229, 0.14), 0 8px 16px -4px rgba(6, 182, 212, 0.08);
-  --shadow-primary: 0 4px 18px rgba(79, 70, 229, 0.28);
-  --shadow-water: 0 8px 30px -4px rgba(6, 182, 212, 0.22), 0 4px 14px rgba(79, 70, 229, 0.15);
+  /* Elevation Shadows */
+  --shadow-xs: 0 1px 2px rgba(15, 30, 46, 0.03);
+  --shadow-sm: 0 2px 8px rgba(15, 30, 46, 0.04);
+  --shadow-md: 0 6px 20px rgba(15, 30, 46, 0.05);
+  --shadow-lg: 0 12px 32px rgba(15, 30, 46, 0.07);
+  --shadow-xl: 0 20px 48px rgba(15, 30, 46, 0.09);
+  --shadow-floating: 0 10px 36px -4px rgba(15, 30, 46, 0.08), 0 2px 8px rgba(15, 30, 46, 0.04);
+  --shadow-card: 0 4px 20px -2px rgba(15, 30, 46, 0.04), 0 1px 3px rgba(15, 30, 46, 0.02);
 
   /* Borders & Radius */
-  --radius-xs: 5px;
-  --radius-sm: 8px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 18px;
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 26px;
+  --radius-2xl: 32px;
   --radius-pill: 9999px;
 
   /* Transitions */
@@ -88,69 +91,71 @@
   --transition-smooth: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* --------------------------------------------------------------------------
-   2. Theme 2: Obsidian Deep Black Tokens (Night Mode)
-   -------------------------------------------------------------------------- */
 [data-theme="dark"] {
   --theme-mode: "dark";
 
-  /* Brand Accents - Neon Electric Indigo & Aqua */
-  --primary: #6366f1;
-  --primary-hover: #818cf8;
-  --primary-light: #a5b4fc;
-  --primary-bright: #c7d2fe;
-  --primary-subtle: rgba(99, 102, 241, 0.16);
-  --primary-border: rgba(99, 102, 241, 0.35);
-  --primary-glow: rgba(99, 102, 241, 0.28);
+  /* Brand Colors - Glowing Cyan & Deep Slate */
+  --primary: #38bdf8;
+  --primary-hover: #7dd3fc;
+  --primary-light: #0284c7;
+  --primary-bright: #00f2fe;
+  --primary-subtle: rgba(56, 189, 248, 0.14);
+  --primary-border: rgba(56, 189, 248, 0.28);
+  --primary-glow: rgba(56, 189, 248, 0.25);
 
-  /* Water & Aqua Neon Palette */
-  --water-cyan: #22d3ee;
-  --water-teal: #38bdf8;
-  --water-sky: #7dd3fc;
-  --water-glow: rgba(34, 211, 238, 0.2);
-  --water-tint: rgba(34, 211, 238, 0.08);
-
-  /* Semantic Accents */
-  --secondary: #94a3b8;
+  /* Water & Cyan Accents */
+  --accent-teal: #2dd4bf;
   --accent-cyan: #22d3ee;
+  --accent-sky: #38bdf8;
   --accent-emerald: #34d399;
   --accent-amber: #fbbf24;
   --accent-rose: #fb7185;
   --accent-indigo: #818cf8;
-  --accent-purple: #c084fc;
+  --accent-purple: #a855f7;
 
-  /* Surfaces & Ambient Canvas - OLED Obsidian Black */
-  --bg-app: #06080e;
-  --bg-mesh: radial-gradient(ellipse at 12% 0%, rgba(99, 102, 241, 0.16) 0%, transparent 55%),
-             radial-gradient(ellipse at 88% 8%, rgba(6, 182, 212, 0.12) 0%, transparent 55%),
-             radial-gradient(ellipse at 50% 100%, rgba(99, 102, 241, 0.07) 0%, transparent 60%),
-             #06080e;
+  /* Hero Gradient in Dark Mode */
+  --hero-bg: linear-gradient(135deg, #0f2e37 0%, #164654 60%, #0d252c 100%);
+  --hero-text: #ffffff;
+  --hero-pill-bg: rgba(255, 255, 255, 0.15);
+  --hero-pill-hover: rgba(255, 255, 255, 0.25);
 
-  --surface: #0c1019;
-  --surface-solid: #0c1019;
-  --surface-subtle: #07090f;
-  --surface-translucent: rgba(12, 16, 25, 0.82);
-  --surface-glass: rgba(12, 16, 25, 0.9);
-  --surface-hover: #141a29;
-  --surface-active: #1b2336;
-  --surface-border: rgba(99, 102, 241, 0.18);
-  --surface-border-strong: rgba(99, 102, 241, 0.38);
-  --surface-border-water: rgba(34, 211, 238, 0.24);
+  /* Canvas & Backgrounds - Oceanic Deep Navy */
+  --bg-app: #091018;
+  --bg-canvas: #091018;
+  --bg-mesh: radial-gradient(ellipse at 15% 10%, rgba(56, 189, 248, 0.12) 0%, transparent 60%),
+             radial-gradient(ellipse at 85% 85%, rgba(45, 212, 191, 0.08) 0%, transparent 60%),
+             #091018;
+
+  /* Frosted Dark Slate Surfaces */
+  --surface: #111A24;
+  --surface-solid: #111A24;
+  --surface-card: #111A24;
+  --surface-subtle: #172331;
+  --surface-pill: #192737;
+  --surface-pill-hover: #22354a;
+  --surface-translucent: rgba(17, 26, 36, 0.94);
+  --surface-glass: rgba(17, 26, 36, 0.88);
+  --surface-hover: #172433;
+  --surface-active: #1D2D3E;
+  --surface-border: rgba(56, 189, 248, 0.12);
+  --surface-border-strong: rgba(56, 189, 248, 0.25);
+  --surface-border-cyan: rgba(34, 211, 238, 0.22);
 
   /* Text Spectrum */
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --text-subtle: #64748b;
-  --text-inverse: #06080e;
+  --text-main: #F1F5F9;
+  --text-heading: #FFFFFF;
+  --text-muted: #94A3B8;
+  --text-subtle: #64748B;
+  --text-inverse: #091018;
 
-  /* Shadows - Deep Obsidian with Neon Rims */
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.6);
-  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.6), 0 0 10px rgba(99, 102, 241, 0.08);
-  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.75), 0 0 16px rgba(99, 102, 241, 0.12);
-  --shadow-lg: 0 12px 30px rgba(0, 0, 0, 0.85), 0 0 24px rgba(99, 102, 241, 0.15);
-  --shadow-xl: 0 24px 45px rgba(0, 0, 0, 0.95), 0 0 32px rgba(99, 102, 241, 0.2);
-  --shadow-primary: 0 4px 22px rgba(99, 102, 241, 0.38);
-  --shadow-water: 0 8px 32px rgba(0, 0, 0, 0.9), 0 0 25px rgba(34, 211, 238, 0.22);
+  /* Elevation Shadows */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.7);
+  --shadow-xl: 0 20px 48px rgba(0, 0, 0, 0.8);
+  --shadow-floating: 0 10px 36px rgba(0, 0, 0, 0.65), 0 0 16px rgba(56, 189, 248, 0.1);
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 /* ==========================================================================

@@ -57,7 +57,7 @@ export default function Category() {
     <>
       <Navigation />
 
-      <main className="container-fluid" style={{ maxWidth: "1240px", padding: "1.25rem 1.25rem 3.5rem" }}>
+      <main className="dashboard-layout">
         {/* Category Hero Card */}
         <section
           className="category-hero-card animate-fade-in"

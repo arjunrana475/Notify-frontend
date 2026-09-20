@@ -3,18 +3,23 @@
    ========================================================================== */
 
 .editor-container {
-  max-width: 880px;
+  max-width: 980px;
   margin: 1.5rem auto 4rem;
-  padding: 0 1.25rem;
+  padding: 0 1.25rem 0 100px;
+}
+
+@media (max-width: 768px) {
+  .editor-container {
+    padding: 0 1rem;
+    margin-top: 80px;
+  }
 }
 
 .editor-card {
-  background: var(--surface);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: var(--surface-card);
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-card);
   padding: 2.25rem;
   position: relative;
   transition: all var(--transition-base);
